@@ -42,9 +42,27 @@ const saveUserName = () => {
 <template>
   <div class="h-screen">
     <template v-if="userInfo?.name">
-      <div class="hidden lg:grid grid-cols-[280px_1fr] h-full">
+      <div class="grid grid-flow-row lg:grid-cols-[280px_1fr] h-full">
         <header class="relative h-full bg-zinc-900 place-content-center text-white">
-          <nav class="grid grid-flow-row place-items-center gap-3 font-bold">
+          <div class="text-base font-semibold lg:absolute top-5 left-0 w-full grid grid-flow-col place-items-center gap-2 px-4">
+            <div class="grid justify-start lg:justify-end items-center w-full h-12">
+              <div class="rounded-full bg-sky-950 w-8 h-8 grid items-center justify-center pb-1">
+                <i class="pi pi-user"></i>
+              </div>
+            </div>
+            <div class="fixed left-14 lg:static grid justify-start items-center w-full text-lg lg:text-xl h-12 truncate capitalize">
+              {{ userInfo?.name }}
+            </div>
+          </div>
+
+          <div class="absolute top-3 right-2 lg:right-auto lg:top-auto lg:bottom-25 lg:left-24 grid grid-flow-col lg:grid-flow-row lg:mt-5 place-items-center gap-2 lg:gap-3">
+            <div class="text-xs font-bold">
+              <span class="hidden lg:inline-block">Modo Oscuro </span> <i :class="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'"></i>
+            </div>
+            <ToggleSwitch v-model="isDarkMode" />
+          </div>
+
+          <nav class="grid h-16 lg:px-0 px-4 grid-flow-col lg:grid-flow-row place-items-center gap-3 font-bold">
             <RouterLink to="/">
               <i class="pi pi-chart-line"></i> Resumen
             </RouterLink>
@@ -58,34 +76,17 @@ const saveUserName = () => {
               <i class="pi pi-credit-card"></i> Deudas
             </RouterLink>
           </nav>
-          <div class="absolute bottom-25 left-24 grid grid-flow-row mt-5 place-items-center gap-3">
-            <div class="text-xs font-bold">
-              Modo Oscuro <i :class="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'"></i>
-            </div>
-            <ToggleSwitch v-model="isDarkMode" />
-          </div>
-          <div class="text-xs font-semibold absolute bottom-8 left-26 grid grid-flow-row mt-5 place-items-center gap-1">
+
+          <div class="text-xs font-semibold absolute bottom-8 left-26 hidden lg:grid grid-flow-row mt-5 place-items-center gap-1">
             created by <img src="@/assets/logo.png" alt="Money Balance" class="w-20" />
-          </div>
-          <div class="text-base font-semibold absolute top-5 left-0 w-full grid grid-flow-col place-items-center gap-2 px-4">
-            <div class="grid justify-end items-center w-full h-12">
-              <div class="rounded-full bg-sky-950 w-8 h-8 grid items-center justify-center pb-1">
-                <i class="pi pi-user"></i>
-              </div>
-            </div>
-            <div class="grid justify-start items-center w-full text-xl h-12 truncate capitalize">
-              {{ userInfo?.name }}
-            </div>
           </div>
         </header>
         <div :class="`h-full overflow-auto ${route.name === 'summary' ? 'pb-5' : 'p-5'}`">
           <RouterView />
         </div>
-      </div>
-      <div class="lg:hidden grid h-full bg-zinc-900 text-white sm:text-2xl text-xl p-16 grid-flow-row gap-2 place-content-center font-semibold">
-        <div class="grid justify-center grid-flow-col items-center min-h-20 gap-1 text-justify">
-          <i class="pi pi-info-circle mr-2 text-sky-900" style="font-size:40px;"></i>
-          Para poder usar la app, accede desde un dispositivo desktop o con una resolución mayor a 1024px.
+
+        <div class="bg-zinc-900 w-full text-xs font-semibold absolute p-2 bottom-0 left-0 lg:hidden grid grid-flow-row mt-5 place-items-center gap-1">
+          <img src="@/assets/logo.png" alt="Money Balance" class="w-18" />
         </div>
       </div>
     </template>

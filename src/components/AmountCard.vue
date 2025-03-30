@@ -35,7 +35,7 @@ const props = defineProps<{
       </div>
     </template>
     <template #content>
-      <div :class="`grid place-items-center grid-flow font-bold text-4xl py-4 ${props.labelClass}`">
+      <div :class="`grid place-items-center grid-flow font-bold text-3xl lg:text-4xl py-4 ${props.labelClass}`">
         <span>{{ formatCurrency(props.amount) }}</span>
       </div>
     </template>

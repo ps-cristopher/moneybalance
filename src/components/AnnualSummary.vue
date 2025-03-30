@@ -102,7 +102,7 @@ const toggleContent = () => {
 <template>
   <div :class="props.class">
     <button @click="toggleContent" class="grid grid-cols-1 rounded-sm hover:bg-sky-950 hover:text-white p-4 cursor-pointer w-full">
-      <div class="text-xl font-bold grid place-content-start">
+      <div class="text-lg lg:text-xl font-bold grid place-content-start">
         <div>
           <div class="mr-2 inline-block">
             <template v-if="isShowingContent">
@@ -140,7 +140,7 @@ const toggleContent = () => {
               </th>
             </tr>
             <tr>
-              <th class="bg-sky-950 text-white min-w-50 p-2 border-r-[1px] sticky left-0" scope="col">Gasto / Fecha</th>
+              <th class="bg-sky-950 text-white min-w-32 lg:min-w-50 p-2 border-r-[1px] sticky left-0" scope="col">Gasto / Fecha</th>
               <th class="bg-sky-950 text-white p-2 min-w-32 border-r-[1px] border-b-[1px]" v-for="month in nextTwelveMonths" :key="month.label" scope="col">
                 {{ month.label }}
               </th>

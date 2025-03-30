@@ -161,9 +161,9 @@ const balanceChartData = computed(() => {
 
 <template>
   <main>
-    <div class="grid grid-flow-col gap-2 mb-4 sticky top-0 bg-s z-10 p-5 bg-sky-950">
-      <div class="grid items-center justify-end">
-        <h1 class="text-xl font-semibold text-white">
+    <div class="grid grid-flow-row lg:grid-flow-col gap-2 mb-4 sticky top-0 bg-s z-10 p-5 bg-sky-950">
+      <div class="grid items-center justify-start lg:justify-end">
+        <h1 class="text-lg lg:text-xl font-semibold text-white">
           <i class="pi pi-chart-line" style="font-size: 14px;"></i>
           Proyección de balance para
         </h1>
@@ -175,7 +175,7 @@ const balanceChartData = computed(() => {
     </div>
 
     <div class="p-5">
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid lg:grid-cols-3 gap-4">
         <AmountCard
           :amount="totalIncomes"
           label="Ingresos"
@@ -201,7 +201,7 @@ const balanceChartData = computed(() => {
         />
       </div>
 
-      <div v-if="totalToPay > 0 && totalToSave > 0" class="grid grid-cols-2 gap-4 mt-5">
+      <div v-if="totalToPay > 0 && totalToSave > 0" class="grid lg:grid-cols-2 gap-4 mt-5">
         <Card class="grid place-content-center cols-span-2">
           <template #title>
             <div class="grid place-items-center">

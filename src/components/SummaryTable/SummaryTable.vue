@@ -25,7 +25,7 @@ const toggleContent = () => {
 <template>
   <div :class="props.class">
     <button @click="toggleContent" class="grid grid-cols-2 rounded-sm hover:bg-sky-950 hover:text-white p-4 cursor-pointer w-full">
-      <div class="text-xl font-bold grid place-content-start">
+      <div class="text-lg lg:text-xl font-bold grid place-content-start">
         <div>
           <div class="mr-2 inline-block">
             <template v-if="isShowingContent">
@@ -39,7 +39,7 @@ const toggleContent = () => {
           {{ props.titleLabel }}
         </div>  
       </div>
-      <div class="text-xl font-bold grid place-content-end">
+      <div class="text-lg lg:text-xl font-bold grid place-content-end">
         {{ props.subTitleLabel }}
       </div>
     </button>
