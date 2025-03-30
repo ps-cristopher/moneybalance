@@ -42,7 +42,7 @@ const saveUserName = () => {
 <template>
   <div class="h-screen">
     <template v-if="userInfo?.name">
-      <div class="grid grid-flow-row lg:grid-cols-[280px_1fr] h-full">
+      <div class="grid grid-flow-row lg:grid-cols-[280px_1fr] lg:h-full">
         <header class="relative h-full bg-zinc-900 place-content-center text-white">
           <div class="text-base font-semibold lg:absolute top-5 left-0 w-full grid grid-flow-col place-items-center gap-2 px-4">
             <div class="grid justify-start lg:justify-end items-center w-full h-12">
@@ -62,18 +62,18 @@ const saveUserName = () => {
             <ToggleSwitch v-model="isDarkMode" />
           </div>
 
-          <nav class="grid h-16 lg:px-0 px-4 grid-flow-col lg:grid-flow-row place-items-center gap-3 font-bold">
+          <nav class="grid h-16 text-sm lg:text-base lg:px-0 px-4 grid-flow-col lg:grid-flow-row place-items-center gap-3 font-bold">
             <RouterLink to="/">
-              <i class="pi pi-chart-line"></i> Resumen
+              <i class="pi pi-chart-line" :style="{fontSize: '14px'}"></i> Resumen
             </RouterLink>
             <RouterLink to="/incomes">
-              <i class="pi pi-dollar"></i> Ingresos
+              <i class="pi pi-dollar" :style="{fontSize: '14px'}"></i> Ingresos
             </RouterLink>
             <RouterLink to="/expenses">
-              <i class="pi pi-wallet"></i> Gastos
+              <i class="pi pi-wallet" :style="{fontSize: '14px'}"></i> Gastos
             </RouterLink>
             <RouterLink to="/debts">
-              <i class="pi pi-credit-card"></i> Deudas
+              <i class="pi pi-credit-card" :style="{fontSize: '14px'}"></i> Deudas
             </RouterLink>
           </nav>
 
