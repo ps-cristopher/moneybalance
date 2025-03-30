@@ -50,7 +50,7 @@ const saveUserName = () => {
                 <i class="pi pi-user"></i>
               </div>
             </div>
-            <div class="fixed left-14 lg:static grid justify-start items-center w-full text-lg lg:text-xl h-12 truncate capitalize">
+            <div class="absolute left-14 lg:static grid justify-start items-center lg:w-full text-lg lg:text-xl h-12 truncate capitalize">
               {{ userInfo?.name }}
             </div>
           </div>
@@ -84,10 +84,6 @@ const saveUserName = () => {
         <div :class="`h-full overflow-auto ${route.name === 'summary' ? 'pb-5' : 'p-5'}`">
           <RouterView />
         </div>
-
-        <div class="bg-zinc-900 w-full text-xs font-semibold absolute p-2 bottom-0 left-0 lg:hidden grid grid-flow-row mt-5 place-items-center gap-1">
-          <img src="@/assets/logo.png" alt="Money Balance" class="w-18" />
-        </div>
       </div>
     </template>
     <template v-else>
@@ -101,6 +97,9 @@ const saveUserName = () => {
         </Dialog>
       </div>
     </template>
+    <div class="bg-zinc-900 w-full text-xs font-semibold fixed p-2 bottom-0 left-0 lg:hidden grid grid-flow-row mt-5 place-items-center gap-1">
+      <img src="@/assets/logo.png" alt="Money Balance" class="w-18" />
+    </div>
   </div>
 </template>
 
