@@ -10,11 +10,11 @@ import Message from 'primevue/message';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import AmountItem from '@/components/SummaryTable/AmountItem.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from '@/stores/store';
 import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
-import { formatCustomDate } from '@/utils';
+import { formatCustomDate, getRemainingAmountToPay, getRemainingPayments, periodIncludesCustomDate } from '@/utils';
 import {
   PAGINATION_ROWS_PER_PAGE,
   PAGINATION_OPTIONS
@@ -26,6 +26,7 @@ import type {
   IYear,
   ICustomDate
 } from '@/types';
+import useDateFilters from '@/hooks/useDateFilters';
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -37,6 +38,31 @@ const {
   addDebt,
   removeDebt,
 } = useStore()
+
+const {
+  selectedMonth,
+  selectedYear,
+  monthsToRender,
+  yearsToRender,
+  selectedDate,
+} = useDateFilters()
+
+const debtsToRender = computed(() => {
+  return debts.filter(debt => {
+    const isInDebtPeriod = periodIncludesCustomDate({
+      startedAt: debt.startedAt,
+      endedAt: debt.endedAt,
+    }, selectedDate.value)
+
+    return isInDebtPeriod
+  }).map(debt => {
+    return {
+      ...debt,
+      remainingPayments: getRemainingPayments(debt, selectedDate.value),
+      remainingAmountToPay: getRemainingAmountToPay(debt, selectedDate.value)
+    }
+  })
+})
 
 const isOpenModal = ref(false)
 const errorMessage = ref<string | null>(null)
@@ -129,23 +155,29 @@ const save = () => {
 <template>
   <Toast />
   <ConfirmDialog :closable="false" :draggable="false" />
-  <div>
+  <div class="grid grid-flow-row lg:grid-flow-col gap-2 mb-4">
     <h1 class="text-3xl font-bold">
       <i class="pi pi-dollar" style="font-size: 22px;"></i>
-      Deudas
+      Deudas ({{ debtsToRender.length }})
     </h1>
+    <div class="grid grid-cols-2 gap-4">
+      <Select v-model="selectedMonth" :options="monthsToRender" optionLabel="label" placeholder="Mes" />
+      <Select v-model="selectedYear" :options="yearsToRender" optionLabel="label" placeholder="Año" />
+    </div>
   </div>
 
   <Divider />
   
-  <div class="grid place-content-end mb-4">
-    <Button label="Nueva Deuda" icon="pi pi-plus" @click="toggleModal" />
+  <div class="grid place-content-end items-center mb-4 grid-flow-col gap-2">
+    <div>
+      <Button label="Nueva Deuda" icon="pi pi-plus" @click="toggleModal" />
+    </div>
   </div>
 
   <div class="mb-4">
     <DataTable
-      v-if="debts.length > 0"
-      :value="debts"
+      v-if="debtsToRender.length > 0"
+      :value="debtsToRender"
       tableStyle="min-width: 50rem"
       stripedRows
       :sort-order="-1"

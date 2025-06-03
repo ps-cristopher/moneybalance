@@ -29,6 +29,7 @@ import type {
   ICustomDate,
   IAmountType,
 } from '@/types';
+import useDateFilters from '@/hooks/useDateFilters';
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -42,6 +43,13 @@ const {
   removeExpense,
 } = useStore()
 
+const {
+  selectedMonth,
+  selectedYear,
+  monthsToRender,
+  yearsToRender,
+} = useDateFilters()
+
 const isOpenModal = ref(false)
 const errorMessage = ref<string | null>(null)
 const expenseType = ref<IExpenseType | null>(null)
@@ -52,6 +60,17 @@ const expenseDateMonth = ref<IMonth | null>(null)
 const expenseDateYear = ref<IYear | null>(null)
 
 const defaultExpenseType: IAmountType = {...amountTypes[STATIC_PAYMENT_TYPE_VALUE]}
+
+const allExpensesToRender = computed(() => {
+  return expenses.filter((expense) => {
+    const expenseMonth = expense.date?.month || 0
+    const expenseYear = expense.date?.year || 0
+    const isStaticPaymentType = expense.type?.value === STATIC_PAYMENT_TYPE_VALUE || expense.type?.value === SUSCRIPTION_PAYMENT_TYPE_VALUE
+    const isInSelectedDate = (expenseMonth === selectedMonth.value?.value && expenseYear === selectedYear.value?.value)
+
+    return isStaticPaymentType || isInSelectedDate
+  })
+})
 
 const isStaticPaymentType = computed(() => {
   return expenseType.value?.value === STATIC_PAYMENT_TYPE_VALUE || expenseType.value?.value === SUSCRIPTION_PAYMENT_TYPE_VALUE
@@ -154,23 +173,29 @@ const save = () => {
 <template>
   <Toast />
   <ConfirmDialog :closable="false" :draggable="false" />
-  <div>
+  <div class="grid grid-flow-row lg:grid-flow-col gap-2 mb-4">
     <h1 class="text-3xl font-bold">
       <i class="pi pi-dollar" style="font-size: 22px;"></i>
-      Gastos
+      Gastos ({{ allExpensesToRender.length }})
     </h1>
+    <div class="grid grid-cols-2 gap-4">
+      <Select v-model="selectedMonth" :options="monthsToRender" optionLabel="label" placeholder="Mes" />
+      <Select v-model="selectedYear" :options="yearsToRender" optionLabel="label" placeholder="Año" />
+    </div>
   </div>
 
   <Divider />
   
-  <div class="grid place-content-end mb-4">
-    <Button label="Nuevo Gasto" icon="pi pi-plus" @click="toggleModal" />
+  <div class="grid place-content-end items-center mb-4 grid-flow-col gap-2">
+    <div>
+      <Button label="Nuevo Gasto" icon="pi pi-plus" @click="toggleModal" />
+    </div>
   </div>
 
   <div class="mb-4">
     <DataTable
-      v-if="expenses.length > 0"
-      :value="expenses"
+      v-if="allExpensesToRender.length > 0"
+      :value="allExpensesToRender"
       tableStyle="min-width: 50rem"
       stripedRows
       :sort-order="-1"
