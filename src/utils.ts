@@ -18,7 +18,9 @@ export const getYearsForSelect = (startYear: number, endYear: number): IYear[] =
     throw new Error('Invalid years range')
   }
 
-  return Array(endYear - startYear).fill(0).map((_, i) => ({ value: i + startYear, label: `${i + startYear}` }))
+  return Array(endYear - startYear + 1)
+    .fill(0)
+    .map((_, i) => ({ value: i + startYear, label: `${i + startYear}` }))
 }
 
 export const periodIncludesCustomDate = (
