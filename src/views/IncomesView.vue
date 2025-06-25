@@ -10,12 +10,13 @@ import Message from 'primevue/message';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import AmountItem from '@/components/SummaryTable/AmountItem.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from '@/stores/store';
 import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
-import { formatCustomDate } from '@/utils';
+import { formatCustomDate, periodIncludesCustomDate } from '@/utils';
 import {
+  STATIC_PAYMENT_TYPE_VALUE,
   EXTRA_INCOME_TYPE_VALUE,
   PAGINATION_ROWS_PER_PAGE,
   PAGINATION_OPTIONS
@@ -27,6 +28,7 @@ import type {
   IYear,
   ICustomDate
 } from '@/types';
+import useDateFilters from '@/hooks/useDateFilters';
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -38,6 +40,25 @@ const {
   addIncome,
   removeIncome,
 } = useStore()
+
+const {
+  selectedMonth,
+  selectedYear,
+  monthsToRender,
+  yearsToRender,
+  selectedDate,
+} = useDateFilters()
+
+const incomesToRender = computed(() => {
+  return incomes.filter(income => {
+    const isInIncomePeriod = periodIncludesCustomDate({
+      startedAt: income.startedAt,
+      endedAt: income.endedAt,
+    }, selectedDate.value)
+
+    return income.type?.value === STATIC_PAYMENT_TYPE_VALUE || isInIncomePeriod
+  })
+})
 
 const isOpenModal = ref(false)
 const errorMessage = ref<string | null>(null)
@@ -141,11 +162,15 @@ const save = () => {
 <template>
   <Toast />
   <ConfirmDialog :closable="false" :draggable="false" />
-  <div>
+  <div class="grid grid-flow-row lg:grid-flow-col gap-2 mb-4">
     <h1 class="text-3xl font-bold">
       <i class="pi pi-dollar" style="font-size: 22px;"></i>
-      Ingresos
+      Ingresos ({{ incomesToRender.length }})
     </h1>
+    <div class="grid grid-cols-2 gap-4">
+      <Select v-model="selectedMonth" :options="monthsToRender" optionLabel="label" placeholder="Mes" />
+      <Select v-model="selectedYear" :options="yearsToRender" optionLabel="label" placeholder="Año" />
+    </div>
   </div>
 
   <Divider />
@@ -156,8 +181,8 @@ const save = () => {
 
   <div class="mb-4">
     <DataTable
-      v-if="incomes.length > 0"
-      :value="incomes"
+      v-if="incomesToRender.length > 0"
+      :value="incomesToRender"
       tableStyle="min-width: 50rem"
       stripedRows
       :sort-order="-1"
