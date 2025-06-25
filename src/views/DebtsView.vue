@@ -36,6 +36,7 @@ const {
   years,
   debts,
   addDebt,
+  updateDebt,
   removeDebt,
 } = useStore()
 
@@ -64,7 +65,11 @@ const debtsToRender = computed(() => {
   })
 })
 
+const modalHeader = computed(() => isEditMode.value ? 'Editar Deuda' : 'Nueva Deuda')
+
 const isOpenModal = ref(false)
+const isEditMode = ref(false)
+const editingDebtId = ref<string | null>(null)
 const errorMessage = ref<string | null>(null)
 const debtType = ref<IDebtType | null>(null)
 const debtName = ref<string | null>(null)
@@ -74,8 +79,11 @@ const debtStartedYear = ref<IYear | null>()
 const debtEndedMonth = ref<IMonth | null>(null)
 const debtEndededYear = ref<IYear | null>(null)
 
-const toggleModal = () => {
-  isOpenModal.value = !isOpenModal.value
+const openCreateModal = () => {
+  clearForm()
+  isEditMode.value = false
+  editingDebtId.value = null
+  isOpenModal.value = true
 }
 
 const showSuccess = (summary: string, detail: string) => {
@@ -95,7 +103,23 @@ const clearForm = () => {
 
 const cancelSave = () => {
   clearForm()
+  isEditMode.value = false
+  editingDebtId.value = null
   isOpenModal.value = false
+}
+
+const edit = (debt: IDebt) => {
+  isEditMode.value = true
+  editingDebtId.value = debt.id
+  debtType.value = debt.type
+  debtName.value = debt.name
+  debtAmount.value = debt.amount
+  debtStartedMonth.value = months.find(m => m.value === debt.startedAt.month) || null
+  debtStartedYear.value = years.find(y => y.value === debt.startedAt.year) || null
+  debtEndedMonth.value = months.find(m => m.value === debt.endedAt.month) || null
+  debtEndededYear.value = years.find(y => y.value === debt.endedAt.year) || null
+  errorMessage.value = null
+  isOpenModal.value = true
 }
 
 const remove = (debt: IDebt) => {
@@ -131,7 +155,7 @@ const save = () => {
   }
 
   let newDebt: IDebt = {
-    id: Math.random().toString(36).substring(2, 9),
+    id: isEditMode.value && editingDebtId.value ? editingDebtId.value : Math.random().toString(36).substring(2, 9),
     type: debtType.value,
     name: debtName.value,
     amount: debtAmount.value,
@@ -145,9 +169,13 @@ const save = () => {
     }
   }
 
-  addDebt(newDebt)
-
-  showSuccess('Registro exitoso', 'Se ha registrado tu nueva deuda')
+  if (isEditMode.value) {
+    updateDebt(newDebt)
+    showSuccess('Actualización exitosa', 'Se ha actualizado tu deuda')
+  } else {
+    addDebt(newDebt)
+    showSuccess('Registro exitoso', 'Se ha registrado tu nueva deuda')
+  }
   cancelSave()
 }
 </script>
@@ -170,7 +198,7 @@ const save = () => {
   
   <div class="grid place-content-end items-center mb-4 grid-flow-col gap-2">
     <div>
-      <Button label="Nueva Deuda" icon="pi pi-plus" @click="toggleModal" />
+      <Button label="Nueva Deuda" icon="pi pi-plus" @click="openCreateModal" />
     </div>
   </div>
 
@@ -206,7 +234,10 @@ const save = () => {
       </Column>
       <Column>
         <template #body="slotProps"">
-          <Button icon="pi pi-trash" outlined rounded severity="danger" @click="remove(slotProps.data)" />
+          <div class="flex gap-2">
+            <Button icon="pi pi-pencil" outlined rounded severity="info" @click="edit(slotProps.data)" />
+            <Button icon="pi pi-trash" outlined rounded severity="danger" @click="remove(slotProps.data)" />
+          </div>
         </template>
     </Column>
     </DataTable>
@@ -218,8 +249,10 @@ const save = () => {
     </div>
   </div>
 
-  <Dialog v-model:visible="isOpenModal" modal header="Nueva Deuda" class="w-lg" :draggable="false" :closable="false">
-    <span class="text-surface-500 dark:text-surface-400 block mb-8">Agrega los datos de tu nueva deuda.</span>
+  <Dialog v-model:visible="isOpenModal" modal :header="modalHeader" class="w-lg" :draggable="false" :closable="false">
+    <span class="text-surface-500 dark:text-surface-400 block mb-8">
+      {{ isEditMode ? 'Edita los datos de tu deuda.' : 'Agrega los datos de tu nueva deuda.' }}
+    </span>
     <div class="grid grid-flow-col grid-cols-4 gap-4 mb-4">
       <label for="username" class="font-semibold grid items-center justify-end">Tipo</label>
       <Select v-model="debtType" class="col-span-3" :options="debtTypes" optionLabel="label" placeholder="Selecciona el tipo de deuda" />
