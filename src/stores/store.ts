@@ -70,6 +70,13 @@ export const useStore = defineStore('store', () => {
     debts.value.push(debt)
   }
 
+  const updateDebt = (updatedDebt: IDebt) => {
+    const index = debts.value.findIndex((d) => d.id === updatedDebt.id)
+    if (index !== -1) {
+      debts.value[index] = updatedDebt
+    }
+  }
+
   const removeDebt = (debt: IDebt) => {
     const debtIndex = debts.value.findIndex((i) => i.id === debt.id)
     debts.value.splice(debtIndex, 1)
@@ -96,6 +103,7 @@ export const useStore = defineStore('store', () => {
     debtTypes,
     debts,
     addDebt,
+    updateDebt,
     removeDebt,
     userInfo,
     setUser
