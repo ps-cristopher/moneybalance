@@ -44,6 +44,7 @@ const saveUserName = () => {
     <template v-if="userInfo?.name">
       <div class="grid grid-flow-row lg:grid-cols-[280px_1fr] lg:h-full">
         <header class="relative h-full bg-zinc-900 place-content-center text-white">
+
           <div class="text-base font-semibold lg:absolute top-5 left-0 w-full grid grid-flow-col place-items-center gap-2 px-4">
             <div class="grid justify-start lg:justify-end items-center w-full h-12">
               <div class="rounded-full bg-sky-950 w-8 h-8 grid items-center justify-center pb-1">
@@ -89,8 +90,11 @@ const saveUserName = () => {
     <template v-else>
       <div class="bg-zinc-900 w-full h-full">
         <Dialog visible modal header="Bienvenido!" class="w-lg" :draggable="false" :closable="false">
+          <div class="grid place-items-center mb-4">
+            <img src="@/assets/logo.png" alt="Money Balance" class="w-24" />
+          </div>
           <p class="text-surface-500 dark:text-surface-400 mb-4">
-            Money Balance es tu asistente para controlar tus finanzas. Registra ingresos, gastos y deudas de forma sencilla, organízalos por categorías y revisa gráficas que muestran la evolución de tu dinero. Con un balance siempre actualizado podrás tomar mejores decisiones y alcanzar tus metas financieras.
+            Balancash es tu asistente para controlar tus finanzas. Registra ingresos, gastos y deudas de forma sencilla, organízalos por categorías y revisa gráficas que muestran la evolución de tu dinero. Con un balance siempre actualizado podrás tomar mejores decisiones y alcanzar tus metas financieras.
           </p>
           <span class="text-surface-500 dark:text-surface-400 block mb-8">Para empezar a usar la app ingresa tu nombre</span>
           <div class="grid grid-flow-col gap-4 mb-4">
