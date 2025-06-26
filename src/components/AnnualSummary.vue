@@ -3,14 +3,23 @@ import type { ICustomDate, INextMonth } from '@/types';
 import { useStore } from '@/stores/store';
 import Divider from 'primevue/divider';
 import AmountItem from '@/components/SummaryTable/AmountItem.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted, type Ref } from 'vue';
 import { STATIC_PAYMENT_TYPE_VALUE, SUSCRIPTION_PAYMENT_TYPE_VALUE } from '@/constants';
 import { periodIncludesCustomDate, isSameDate, isStatictExpenseOrSuscription } from '@/utils';
 
 const props = defineProps<{
   selectedDate: ICustomDate,
   class?: string,
+  containerRef?: Ref<HTMLElement | null>,
 }>();
+
+const rootElement = ref<HTMLElement | null>(null)
+
+onMounted(() => {
+  if (props.containerRef) {
+    props.containerRef.value = rootElement.value
+  }
+})
 
 const { months, incomes, expenses, debts } = useStore();
 
@@ -100,7 +109,7 @@ const toggleContent = () => {
 </script>
 
 <template>
-  <div :class="props.class">
+  <div :class="props.class" ref="rootElement">
     <button @click="toggleContent" class="grid grid-cols-1 rounded-sm hover:bg-sky-950 hover:text-white p-4 cursor-pointer w-full">
       <div class="text-lg lg:text-xl font-bold grid place-content-start">
         <div>
