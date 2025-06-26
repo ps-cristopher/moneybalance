@@ -52,6 +52,13 @@ export const useStore = defineStore('store', () => {
     incomes.value.push(income)
   }
 
+  const updateIncome = (updatedIncome: IIncome) => {
+    const index = incomes.value.findIndex(i => i.id === updatedIncome.id)
+    if (index !== -1) {
+      incomes.value[index] = updatedIncome
+    }
+  }
+
   const removeIncome = (income: IIncome) => {
     const incomeIndex = incomes.value.findIndex((i) => i.id === income.id)
     incomes.value.splice(incomeIndex, 1)
@@ -59,6 +66,13 @@ export const useStore = defineStore('store', () => {
 
   const addExpense = (expense: IExpense) => {
     expenses.value.push(expense)
+  }
+
+  const updateExpense = (updatedExpense: IExpense) => {
+    const index = expenses.value.findIndex(e => e.id === updatedExpense.id)
+    if (index !== -1) {
+      expenses.value[index] = updatedExpense
+    }
   }
 
   const removeExpense = (expense: IExpense) => {
@@ -94,11 +108,13 @@ export const useStore = defineStore('store', () => {
     years,
     incomes,
     addIncome,
+    updateIncome,
     removeIncome,
     expenseTypes,
     amountTypes,
     expenses,
     addExpense,
+    updateExpense,
     removeExpense,
     debtTypes,
     debts,

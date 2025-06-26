@@ -40,6 +40,7 @@ const {
   years,
   expenses,
   addExpense,
+  updateExpense,
   removeExpense,
 } = useStore()
 
@@ -50,7 +51,11 @@ const {
   yearsToRender,
 } = useDateFilters()
 
+const modalHeader = computed(() => isEditMode.value ? 'Editar Gasto' : 'Nuevo Gasto')
+
 const isOpenModal = ref(false)
+const isEditMode = ref(false)
+const editingExpenseId = ref<string | null>(null)
 const errorMessage = ref<string | null>(null)
 const expenseType = ref<IExpenseType | null>(null)
 const expenseName = ref<string | null>(null)
@@ -76,8 +81,11 @@ const isStaticPaymentType = computed(() => {
   return expenseType.value?.value === STATIC_PAYMENT_TYPE_VALUE || expenseType.value?.value === SUSCRIPTION_PAYMENT_TYPE_VALUE
 })
 
-const toggleModal = () => {
-  isOpenModal.value = !isOpenModal.value
+const openCreateModal = () => {
+  clearForm()
+  isEditMode.value = false
+  editingExpenseId.value = null
+  isOpenModal.value = true
 }
 
 const showSuccess = (summary: string, detail: string) => {
@@ -96,7 +104,22 @@ const clearForm = () => {
 
 const cancelSave = () => {
   clearForm()
+  isEditMode.value = false
+  editingExpenseId.value = null
   isOpenModal.value = false
+}
+
+const edit = (expense: IExpense) => {
+  isEditMode.value = true
+  editingExpenseId.value = expense.id
+  expenseType.value = expense.type
+  expenseName.value = expense.name
+  expenseAmount.value = expense.amount
+  amountType.value = expense.amountType
+  expenseDateMonth.value = months.find(m => m.value === expense.date?.month) || null
+  expenseDateYear.value = years.find(y => y.value === expense.date?.year) || null
+  errorMessage.value = null
+  isOpenModal.value = true
 }
 
 const remove = (expense: IExpense) => {
@@ -141,7 +164,7 @@ const save = () => {
   }
 
   let newExpense: IExpense = {
-    id: Math.random().toString(36).substring(2, 9),
+    id: isEditMode.value && editingExpenseId.value ? editingExpenseId.value : Math.random().toString(36).substring(2, 9),
     type: expenseType.value,
     amountType: isStaticPaymentType.value && amountType.value ? amountType.value : defaultExpenseType,
     name: expenseName.value,
@@ -163,9 +186,13 @@ const save = () => {
     }
   }
 
-  addExpense(newExpense)
-
-  showSuccess('Registro exitoso', 'Se ha registrado tu nuevo gasto')
+  if (isEditMode.value) {
+    updateExpense(newExpense)
+    showSuccess('Actualización exitosa', 'Se ha actualizado tu gasto')
+  } else {
+    addExpense(newExpense)
+    showSuccess('Registro exitoso', 'Se ha registrado tu nuevo gasto')
+  }
   cancelSave()
 }
 </script>
@@ -188,7 +215,7 @@ const save = () => {
   
   <div class="grid place-content-end items-center mb-4 grid-flow-col gap-2">
     <div>
-      <Button label="Nuevo Gasto" icon="pi pi-plus" @click="toggleModal" />
+      <Button label="Nuevo Gasto" icon="pi pi-plus" @click="openCreateModal" />
     </div>
   </div>
 
@@ -220,7 +247,10 @@ const save = () => {
       </Column>
       <Column>
         <template #body="slotProps"">
-          <Button icon="pi pi-trash" outlined rounded severity="danger" @click="remove(slotProps.data)" />
+          <div class="flex gap-2">
+            <Button icon="pi pi-pencil" outlined rounded severity="info" @click="edit(slotProps.data)" />
+            <Button icon="pi pi-trash" outlined rounded severity="danger" @click="remove(slotProps.data)" />
+          </div>
         </template>
     </Column>
     </DataTable>
@@ -232,8 +262,10 @@ const save = () => {
     </div>
   </div>
 
-  <Dialog v-model:visible="isOpenModal" modal header="Nuevo Gasto" class="w-lg" :draggable="false" :closable="false">
-    <span class="text-surface-500 dark:text-surface-400 block mb-8">Agrega los datos de tu nuevo gasto.</span>
+  <Dialog v-model:visible="isOpenModal" modal :header="modalHeader" class="w-lg" :draggable="false" :closable="false">
+    <span class="text-surface-500 dark:text-surface-400 block mb-8">
+      {{ isEditMode ? 'Edita los datos de tu gasto.' : 'Agrega los datos de tu nuevo gasto.' }}
+    </span>
     <div class="grid grid-flow-col grid-cols-4 gap-4 mb-4">
       <label for="username" class="font-semibold grid items-center justify-end">Tipo</label>
       <Select v-model="expenseType" class="col-span-3" :options="expenseTypes" optionLabel="label" placeholder="Selecciona el tipo de gasto" />

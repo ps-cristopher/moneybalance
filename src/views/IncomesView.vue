@@ -38,6 +38,7 @@ const {
   years,
   incomes,
   addIncome,
+  updateIncome,
   removeIncome,
 } = useStore()
 
@@ -60,7 +61,11 @@ const incomesToRender = computed(() => {
   })
 })
 
+const modalHeader = computed(() => isEditMode.value ? 'Editar Ingreso' : 'Nuevo Ingreso')
+
 const isOpenModal = ref(false)
+const isEditMode = ref(false)
+const editingIncomeId = ref<string | null>(null)
 const errorMessage = ref<string | null>(null)
 const incomeType = ref<IIncomeType | null>(null)
 const incomeName = ref<string | null>(null)
@@ -70,8 +75,11 @@ const incomeStartedYear = ref<IYear | null>(null)
 const incomeEndedMonth = ref<IMonth | null>(null)
 const incomeEndededYear = ref<IYear | null>(null)
 
-const toggleModal = () => {
-  isOpenModal.value = !isOpenModal.value
+const openCreateModal = () => {
+  clearForm()
+  isEditMode.value = false
+  editingIncomeId.value = null
+  isOpenModal.value = true
 }
 
 const showSuccess = (summary: string, detail: string) => {
@@ -91,7 +99,23 @@ const clearForm = () => {
 
 const cancelSave = () => {
   clearForm()
+  isEditMode.value = false
+  editingIncomeId.value = null
   isOpenModal.value = false
+}
+
+const edit = (income: IIncome) => {
+  isEditMode.value = true
+  editingIncomeId.value = income.id
+  incomeType.value = income.type
+  incomeName.value = income.name
+  incomeAmount.value = income.amount
+  incomeStartedMonth.value = months.find(m => m.value === income.startedAt?.month) || null
+  incomeStartedYear.value = years.find(y => y.value === income.startedAt?.year) || null
+  incomeEndedMonth.value = months.find(m => m.value === income.endedAt?.month) || null
+  incomeEndededYear.value = years.find(y => y.value === income.endedAt?.year) || null
+  errorMessage.value = null
+  isOpenModal.value = true
 }
 
 const remove = (income: IIncome) => {
@@ -127,7 +151,7 @@ const save = () => {
   }
 
   let newIncome: IIncome = {
-    id: Math.random().toString(36).substring(2, 9),
+    id: isEditMode.value && editingIncomeId.value ? editingIncomeId.value : Math.random().toString(36).substring(2, 9),
     type: incomeType.value,
     name: incomeName.value,
     amount: incomeAmount.value,
@@ -152,9 +176,13 @@ const save = () => {
     }
   }
 
-  addIncome(newIncome)
-
-  showSuccess('Registro exitoso', 'Se ha registrado tu nuevo ingreso')
+  if (isEditMode.value) {
+    updateIncome(newIncome)
+    showSuccess('Actualización exitosa', 'Se ha actualizado tu ingreso')
+  } else {
+    addIncome(newIncome)
+    showSuccess('Registro exitoso', 'Se ha registrado tu nuevo ingreso')
+  }
   cancelSave()
 }
 </script>
@@ -176,7 +204,7 @@ const save = () => {
   <Divider />
   
   <div class="grid place-content-end mb-4">
-    <Button label="Nuevo Ingreso" icon="pi pi-plus" @click="toggleModal" />
+    <Button label="Nuevo Ingreso" icon="pi pi-plus" @click="openCreateModal" />
   </div>
 
   <div class="mb-4">
@@ -211,7 +239,10 @@ const save = () => {
       </Column>
       <Column>
         <template #body="slotProps"">
-          <Button icon="pi pi-trash" outlined rounded severity="danger" @click="remove(slotProps.data)" />
+          <div class="flex gap-2">
+            <Button icon="pi pi-pencil" outlined rounded severity="info" @click="edit(slotProps.data)" />
+            <Button icon="pi pi-trash" outlined rounded severity="danger" @click="remove(slotProps.data)" />
+          </div>
         </template>
       </Column>
     </DataTable>
@@ -223,8 +254,10 @@ const save = () => {
     </div>
   </div>
 
-  <Dialog v-model:visible="isOpenModal" modal header="Nuevo Ingreso" class="w-lg" :draggable="false" :closable="false">
-    <span class="text-surface-500 dark:text-surface-400 block mb-8">Agrega los datos de tu nuevo ingreso.</span>
+  <Dialog v-model:visible="isOpenModal" modal :header="modalHeader" class="w-lg" :draggable="false" :closable="false">
+    <span class="text-surface-500 dark:text-surface-400 block mb-8">
+      {{ isEditMode ? 'Edita los datos de tu ingreso.' : 'Agrega los datos de tu nuevo ingreso.' }}
+    </span>
     <div class="grid grid-flow-col grid-cols-4 gap-4 mb-4">
       <label for="username" class="font-semibold grid items-center justify-end">Tipo</label>
       <Select v-model="incomeType" class="col-span-3" :options="incomeTypes" optionLabel="label" placeholder="Selecciona el tipo de ingreso" />
