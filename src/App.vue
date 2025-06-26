@@ -89,6 +89,9 @@ const saveUserName = () => {
     <template v-else>
       <div class="bg-zinc-900 w-full h-full">
         <Dialog visible modal header="Bienvenido!" class="w-lg" :draggable="false" :closable="false">
+          <p class="text-surface-500 dark:text-surface-400 mb-4">
+            Money Balance es tu asistente para controlar tus finanzas. Registra ingresos, gastos y deudas de forma sencilla, organízalos por categorías y revisa gráficas que muestran la evolución de tu dinero. Con un balance siempre actualizado podrás tomar mejores decisiones y alcanzar tus metas financieras.
+          </p>
           <span class="text-surface-500 dark:text-surface-400 block mb-8">Para empezar a usar la app ingresa tu nombre</span>
           <div class="grid grid-flow-col gap-4 mb-4">
             <InputText v-model="userName" id="email" autocomplete="off" @keydown.enter="saveUserName"/>
