@@ -3,26 +3,17 @@ import type { IDebt, IExpense, IIncome  } from '@/types';
 import Divider from 'primevue/divider';
 import DataTable from 'primevue/datatable';
 import { PAGINATION_ROWS_PER_PAGE, PAGINATION_OPTIONS } from '@/constants';
-import { ref, onMounted, type Ref } from 'vue';
+import { ref } from 'vue';
 
-const props = defineProps<{ 
+const props = defineProps<{
   sortField: string,
   titleLabel: string,
   subTitleLabel?: string,
   emptyStateLabel: string,
   rows: IIncome[] | IExpense[] | IDebt[],
   class?: string,
-  iconClass?: string,
-  containerRef?: Ref<HTMLElement | null>
+  iconClass?: string
 }>();
-
-const rootElement = ref<HTMLElement | null>(null)
-
-onMounted(() => {
-  if (props.containerRef) {
-    props.containerRef.value = rootElement.value
-  }
-})
 
 const isShowingContent = ref(false);
 
@@ -32,7 +23,7 @@ const toggleContent = () => {
 </script>
 
 <template>
-  <div :class="props.class" ref="rootElement">
+  <div :class="props.class">
     <button @click="toggleContent" class="grid grid-cols-2 rounded-sm hover:bg-sky-950 hover:text-white p-4 cursor-pointer w-full">
       <div class="text-lg lg:text-xl font-bold grid place-content-start">
         <div>
