@@ -8,24 +8,13 @@ import Select from 'primevue/select';
 import Chart from 'primevue/chart';
 import Column from 'primevue/column';
 import { computed, ref } from 'vue';
-import Dialog from 'primevue/dialog';
-import Button from 'primevue/button';
-import useTour, { TourStep } from '@/hooks/useTour';
 import AmountCard from '@/components/AmountCard.vue';
 import SummaryTable from '@/components/SummaryTable/SummaryTable.vue';
 import AmountItem from '@/components/SummaryTable/AmountItem.vue';
 import AnnualSummary from '@/components/AnnualSummary.vue';
 import { formatCurrency, getRemainingAmountToPay, getRemainingPayments, periodIncludesCustomDate } from '@/utils';
 
-const {
-  months,
-  years,
-  incomes,
-  expenses,
-  debts,
-  summaryTourSeen,
-  setSummaryTourSeen,
-} = useStore()
+const { months, years, incomes, expenses, debts } = useStore()
 
 const currentMonth = new Date().getMonth() + 1
 const currentYear = new Date().getFullYear()
@@ -37,54 +26,6 @@ const monthsToRender = months.filter(month => month.value >= currentMonth - 1)
 const yearsToRender = years.filter(year => year.value >= currentYear)
 
 const selectedDate = computed<ICustomDate>(() => ({ month: selectedMonth.value?.value as Month, year: selectedYear.value?.value }))
-
-const filtersContainer = ref<HTMLElement | null>(null)
-const projectionContainer = ref<HTMLElement | null>(null)
-const incomesTableContainer = ref<HTMLElement | null>(null)
-const suscriptionsTableContainer = ref<HTMLElement | null>(null)
-const staticExpensesTableContainer = ref<HTMLElement | null>(null)
-const withdrawalsTableContainer = ref<HTMLElement | null>(null)
-const debtsTableContainer = ref<HTMLElement | null>(null)
-
-const tourSteps: TourStep[] = [
-  {
-    message: 'Bienvenido al resumen general de tus finanzas. Aquí encontrarás una visión completa de tus ingresos, gastos y deudas.'
-  },
-  {
-    message: 'Usa estos filtros para seleccionar el mes y el año que deseas revisar.',
-    target: filtersContainer,
-  },
-  {
-    message: 'Consulta la proyección anual para anticipar tus gastos y planificar tus ahorros.',
-    target: projectionContainer,
-  },
-  {
-    message: 'Aquí se listan tus ingresos para el periodo seleccionado.',
-    target: incomesTableContainer,
-  },
-  {
-    message: 'En esta sección puedes revisar todas tus suscripciones registradas.',
-    target: suscriptionsTableContainer,
-  },
-  {
-    message: 'Esta tabla muestra tus gastos fijos recurrentes.',
-    target: staticExpensesTableContainer,
-  },
-  {
-    message: 'Aquí encontrarás los retiros y otros gastos del mes.',
-    target: withdrawalsTableContainer,
-  },
-  {
-    message: 'Por último, revisa el detalle de tus deudas pendientes.',
-    target: debtsTableContainer,
-  },
-]
-
-const { isTourOpen, tourStep, tourStyle, nextTourStep } = useTour(
-  tourSteps,
-  summaryTourSeen,
-  setSummaryTourSeen,
-)
 
 const generalExpensesToRender = computed(() => {
   return expenses.filter(expense => {
@@ -220,11 +161,7 @@ const balanceChartData = computed(() => {
 
 <template>
   <main>
-    <Dialog v-model:visible="isTourOpen" :style="tourStyle" modal :draggable="false" :closable="false" class="w-lg">
-      <p class="text-surface-500 dark:text-surface-400 mb-4">{{ tourSteps[tourStep].message }}</p>
-      <Button class="w-full" type="button" :label="tourStep < tourSteps.length - 1 ? 'Siguiente' : 'Entendido'" @click="nextTourStep" />
-    </Dialog>
-    <div ref="filtersContainer" class="grid grid-flow-row lg:grid-flow-col gap-2 mb-4 sticky top-0 bg-s z-10 p-5 bg-sky-950">
+    <div class="grid grid-flow-row lg:grid-flow-col gap-2 mb-4 sticky top-0 bg-s z-10 p-5 bg-sky-950">
       <div class="grid items-center justify-start lg:justify-end">
         <h1 class="text-lg lg:text-xl font-semibold text-white">
           <i class="pi pi-chart-line" style="font-size: 14px;"></i>
@@ -319,7 +256,6 @@ const balanceChartData = computed(() => {
       <AnnualSummary
         class="mb-12"
         :selected-date="selectedDate"
-        :container-ref="projectionContainer"
       />
 
       <Divider />
@@ -332,18 +268,17 @@ const balanceChartData = computed(() => {
         empty-state-label="No hay ingresos registrados para la fecha seleccionada"
         :rows="incomesToRender"
         :sub-title-label="formatCurrency(totalIncomes)"
-        :container-ref="incomesTableContainer"
       >
-          <template #columns>
-            <Column field="name" header="Concepto" sortable class="w-1/5"/>
-            <Column field="type.label" header="Tipo" sortable class="w-1/5"/>
-            <Column field="amount" header="Cantidad" sortable class="w-1/5">
-              <template #body="slotProps">
-                <AmountItem :amount="slotProps.data.amount" is-currency />
-              </template>
-            </Column>
-            <Column />
-            <Column />
+        <template #columns>
+          <Column field="name" header="Concepto" sortable class="w-1/5"/>
+          <Column field="type.label" header="Tipo" sortable class="w-1/5"/>
+          <Column field="amount" header="Cantidad" sortable class="w-1/5">
+            <template #body="slotProps">
+              <AmountItem :amount="slotProps.data.amount" is-currency />
+            </template>
+          </Column>
+          <Column />
+          <Column />
         </template>
       </SummaryTable>
 
@@ -357,7 +292,6 @@ const balanceChartData = computed(() => {
         empty-state-label="No hay suscripciones registradas para la fecha seleccionada"
         :rows="suscriptionsToRender"
         :sub-title-label="formatCurrency(totalSuscriptions)"
-        :container-ref="suscriptionsTableContainer"
       >
         <template #columns>
           <Column field="name" header="Concepto" sortable class="w-1/5"/>
@@ -382,7 +316,6 @@ const balanceChartData = computed(() => {
         empty-state-label="No hay gastos registrados para la fecha seleccionada"
         :rows="staticExpensesToRender"
         :sub-title-label="formatCurrency(totalStaticExpenses)"
-        :container-ref="staticExpensesTableContainer"
       >
         <template #columns>
           <Column field="name" header="Concepto" sortable class="w-1/5"/>
@@ -407,7 +340,6 @@ const balanceChartData = computed(() => {
         empty-state-label="No hay gastos registrados para la fecha seleccionada"
         :rows="generalExpensesToRender"
         :sub-title-label="formatCurrency(totalGeneralExpenses)"
-        :container-ref="withdrawalsTableContainer"
       >
         <template #columns>
           <Column field="name" header="Concepto" sortable class="w-1/5"/>
@@ -432,7 +364,6 @@ const balanceChartData = computed(() => {
         empty-state-label="No hay deudas registradas para la fecha seleccionada"
         :rows="debtsToRender"
         :sub-title-label="formatCurrency(totalDebts)"
-        :container-ref="debtsTableContainer"
       >
         <template #columns>
           <Column field="name" header="Concepto" sortable class="w-1/5"/>

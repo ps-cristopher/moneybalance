@@ -77,5 +77,3 @@ export const DARK_MODE_STORAGE_KEY = 'dark-mode'
 export const DEBTS_LABEL = 'Deudas'
 
 export const USER_INFO_STORAGE_KEY = 'user-info'
-
-export const SUMMARY_TOUR_STORAGE_KEY = 'summary-tour-seen'

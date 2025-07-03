@@ -11,8 +11,7 @@ import {
   EXPENSES_LOCAL_STORAGE_KEY,
   DEBT_TYPES,
   DEBTS_LOCAL_STORAGE_KEY,
-  USER_INFO_STORAGE_KEY,
-  SUMMARY_TOUR_STORAGE_KEY
+  USER_INFO_STORAGE_KEY
 } from '@/constants'
 import type {
   IAmountType,
@@ -33,9 +32,8 @@ const END_YEAR = 2034
 export const useStore = defineStore('store', () => {
   const isDarkMode = useStorage<boolean>(DARK_MODE_STORAGE_KEY, false)
   const userInfo = useStorage<IUserInfo>(USER_INFO_STORAGE_KEY, {
-    name: null,
+    name: null, 
   })
-  const summaryTourSeen = useStorage<boolean>(SUMMARY_TOUR_STORAGE_KEY, false)
   const incomeTypes = ref<IIncomeType[]>(INCOME_TYPES)
   const expenseTypes = ref<IExpenseType[]>(EXPENSE_TYPES)
   const amountTypes = ref<IAmountType[]>(AMOUNT_TYPES)
@@ -102,10 +100,6 @@ export const useStore = defineStore('store', () => {
     userInfo.value = user
   }
 
-  const setSummaryTourSeen = (value: boolean) => {
-    summaryTourSeen.value = value
-  }
-
   return {
     isDarkMode,
     setDarkMode,
@@ -128,8 +122,6 @@ export const useStore = defineStore('store', () => {
     updateDebt,
     removeDebt,
     userInfo,
-    setUser,
-    summaryTourSeen,
-    setSummaryTourSeen
+    setUser
   }
 })
