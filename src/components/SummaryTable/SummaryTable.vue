@@ -15,7 +15,7 @@ const props = defineProps<{
   iconClass?: string
 }>();
 
-const isShowingContent = ref(false);
+const isShowingContent = ref(true);
 
 const toggleContent = () => {
   isShowingContent.value = !isShowingContent.value;
