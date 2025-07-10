@@ -90,11 +90,11 @@ const saveUserName = () => {
     <template v-else>
       <div class="bg-zinc-900 w-full h-full">
         <Dialog visible modal header="Bienvenido!" class="w-lg" :draggable="false" :closable="false">
-          <div class="grid place-items-center mb-4">
-            <img src="@/assets/logo.png" alt="Money Balance" class="w-24" />
-          </div>
           <p class="text-surface-500 dark:text-surface-400 mb-4">
-            Balancash es tu asistente para controlar tus finanzas. Registra ingresos, gastos y deudas de forma sencilla, organízalos por categorías y revisa gráficas que muestran la evolución de tu dinero. Con un balance siempre actualizado podrás tomar mejores decisiones y alcanzar tus metas financieras.
+            Balancash es tu asistente para controlar tus finanzas. Registra ingresos, gastos y deudas de forma sencilla, organízalos por categorías y revisa gráficas que muestran la evolución de tu dinero. Con un balance siempre actualizado, podrás tomar mejores decisiones y alcanzar tus metas financieras.
+          </p>
+          <p class="text-surface-500 dark:text-surface-400 mb-4">
+            Tus datos están seguros y solo tú puedes verlos. Balancash guarda toda la información directamente en tu dispositivo. No necesitas crear una cuenta ni compartir datos personales. Solo recuerda usar siempre el mismo navegador y dispositivo para acceder a tu información.
           </p>
           <span class="text-surface-500 dark:text-surface-400 block mb-8">Para empezar a usar la app ingresa tu nombre</span>
           <div class="grid grid-flow-col gap-4 mb-4">
