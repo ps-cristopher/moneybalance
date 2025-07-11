@@ -5,7 +5,8 @@ import DataTable from 'primevue/datatable';
 import { PAGINATION_ROWS_PER_PAGE, PAGINATION_OPTIONS } from '@/constants';
 import { ref } from 'vue';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
+  initialOpen?: boolean,
   sortField: string,
   titleLabel: string,
   subTitleLabel?: string,
@@ -13,9 +14,11 @@ const props = defineProps<{
   rows: IIncome[] | IExpense[] | IDebt[],
   class?: string,
   iconClass?: string
-}>();
+}>(), {
+  initialOpen: true,
+});
 
-const isShowingContent = ref(false);
+const isShowingContent = ref(props.initialOpen);
 
 const toggleContent = () => {
   isShowingContent.value = !isShowingContent.value;
