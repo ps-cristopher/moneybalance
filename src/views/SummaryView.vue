@@ -268,6 +268,7 @@ const balanceChartData = computed(() => {
         empty-state-label="No hay ingresos registrados para la fecha seleccionada"
         :rows="incomesToRender"
         :sub-title-label="formatCurrency(totalIncomes)"
+        :initial-open="true"
       >
         <template #columns>
           <Column field="name" header="Concepto" sortable class="w-1/5"/>
@@ -292,6 +293,7 @@ const balanceChartData = computed(() => {
         empty-state-label="No hay suscripciones registradas para la fecha seleccionada"
         :rows="suscriptionsToRender"
         :sub-title-label="formatCurrency(totalSuscriptions)"
+        :initial-open="true"
       >
         <template #columns>
           <Column field="name" header="Concepto" sortable class="w-1/5"/>
@@ -316,6 +318,7 @@ const balanceChartData = computed(() => {
         empty-state-label="No hay gastos registrados para la fecha seleccionada"
         :rows="staticExpensesToRender"
         :sub-title-label="formatCurrency(totalStaticExpenses)"
+        :initial-open="true"
       >
         <template #columns>
           <Column field="name" header="Concepto" sortable class="w-1/5"/>
@@ -340,6 +343,7 @@ const balanceChartData = computed(() => {
         empty-state-label="No hay gastos registrados para la fecha seleccionada"
         :rows="generalExpensesToRender"
         :sub-title-label="formatCurrency(totalGeneralExpenses)"
+        :initial-open="true"
       >
         <template #columns>
           <Column field="name" header="Concepto" sortable class="w-1/5"/>
@@ -364,6 +368,7 @@ const balanceChartData = computed(() => {
         empty-state-label="No hay deudas registradas para la fecha seleccionada"
         :rows="debtsToRender"
         :sub-title-label="formatCurrency(totalDebts)"
+        :initial-open="true"
       >
         <template #columns>
           <Column field="name" header="Concepto" sortable class="w-1/5"/>
