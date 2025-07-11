@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { DEBTS_LABEL, STATIC_PAYMENT_TYPE_VALUE, SUSCRIPTION_PAYMENT_TYPE_VALUE } from '@/constants';
 import { useStore } from '@/stores/store';
+import { Actions } from '@/hooks/useOpenModalFromQuery';
 import type { ICustomDate, IMonth, IYear, Month } from '@/types';
 import Card from 'primevue/card';
 import Divider from 'primevue/divider';
@@ -266,6 +267,8 @@ const balanceChartData = computed(() => {
         sort-field="amount"
         title-label="Ingresos"
         empty-state-label="No hay ingresos registrados para la fecha seleccionada"
+        :empty-state-link="{ name: 'incomes', query: { action: Actions.NEW } }"
+        empty-state-link-label="Registrar ingreso"
         :rows="incomesToRender"
         :sub-title-label="formatCurrency(totalIncomes)"
       >
@@ -290,6 +293,8 @@ const balanceChartData = computed(() => {
         sort-field="amount"
         title-label="Suscripciones"
         empty-state-label="No hay suscripciones registradas para la fecha seleccionada"
+        :empty-state-link="{ name: 'expenses', query: { action: Actions.NEW } }"
+        empty-state-link-label="Registrar gasto"
         :rows="suscriptionsToRender"
         :sub-title-label="formatCurrency(totalSuscriptions)"
       >
@@ -314,6 +319,8 @@ const balanceChartData = computed(() => {
         sort-field="amount"
         title-label="Gastos fijos"
         empty-state-label="No hay gastos registrados para la fecha seleccionada"
+        :empty-state-link="{ name: 'expenses', query: { action: Actions.NEW } }"
+        empty-state-link-label="Registrar gasto"
         :rows="staticExpensesToRender"
         :sub-title-label="formatCurrency(totalStaticExpenses)"
       >
@@ -338,6 +345,8 @@ const balanceChartData = computed(() => {
         sort-field="amount"
         title-label="Retiros y otros gastos"
         empty-state-label="No hay gastos registrados para la fecha seleccionada"
+        :empty-state-link="{ name: 'expenses', query: { action: Actions.NEW } }"
+        empty-state-link-label="Registrar gasto"
         :rows="generalExpensesToRender"
         :sub-title-label="formatCurrency(totalGeneralExpenses)"
       >
@@ -362,6 +371,8 @@ const balanceChartData = computed(() => {
         sort-field="amount"
         title-label="Deudas"
         empty-state-label="No hay deudas registradas para la fecha seleccionada"
+        :empty-state-link="{ name: 'debts', query: { action: Actions.NEW } }"
+        empty-state-link-label="Registrar deuda"
         :rows="debtsToRender"
         :sub-title-label="formatCurrency(totalDebts)"
       >

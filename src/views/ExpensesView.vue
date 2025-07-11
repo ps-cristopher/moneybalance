@@ -11,6 +11,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import AmountItem from '@/components/SummaryTable/AmountItem.vue';
 import { computed, ref } from 'vue';
+import useOpenModalFromQuery from '@/hooks/useOpenModalFromQuery';
 import { useStore } from '@/stores/store';
 import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
@@ -51,6 +52,7 @@ const {
   yearsToRender,
 } = useDateFilters()
 
+
 const modalHeader = computed(() => isEditMode.value ? 'Editar Gasto' : 'Nuevo Gasto')
 
 const isOpenModal = ref(false)
@@ -87,6 +89,7 @@ const openCreateModal = () => {
   editingExpenseId.value = null
   isOpenModal.value = true
 }
+useOpenModalFromQuery(openCreateModal)
 
 const showSuccess = (summary: string, detail: string) => {
   toast.add({ severity: 'success', summary: summary, detail: detail, life: 5000 })

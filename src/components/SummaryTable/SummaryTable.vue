@@ -1,18 +1,21 @@
 <script setup lang="ts">
-import type { IDebt, IExpense, IIncome  } from '@/types';
+import type { IDebt, IExpense, IIncome } from '@/types';
 import Divider from 'primevue/divider';
 import DataTable from 'primevue/datatable';
 import { PAGINATION_ROWS_PER_PAGE, PAGINATION_OPTIONS } from '@/constants';
 import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 const props = defineProps<{
-  sortField: string,
-  titleLabel: string,
-  subTitleLabel?: string,
-  emptyStateLabel: string,
-  rows: IIncome[] | IExpense[] | IDebt[],
-  class?: string,
-  iconClass?: string
+  sortField: string;
+  titleLabel: string;
+  subTitleLabel?: string;
+  emptyStateLabel: string;
+  rows: IIncome[] | IExpense[] | IDebt[];
+  class?: string;
+  iconClass?: string;
+  emptyStateLink?: import('vue-router').RouteLocationRaw;
+  emptyStateLinkLabel?: string;
 }>();
 
 const isShowingContent = ref(false);
@@ -66,6 +69,13 @@ const toggleContent = () => {
           <span class="text-gray-500 text-lg">
             <i class="pi pi-info-circle" style="font-size: 16px;"></i>
             {{ props.emptyStateLabel }}
+            <RouterLink
+              v-if="props.emptyStateLink && props.emptyStateLinkLabel"
+              :to="props.emptyStateLink"
+              class="text-sky-600 underline ml-1"
+            >
+              {{ props.emptyStateLinkLabel }}
+            </RouterLink>
           </span>
         </div>
       </div>
