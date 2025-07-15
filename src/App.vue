@@ -3,14 +3,17 @@ import { RouterLink, RouterView, useRoute } from 'vue-router'
 import ToggleSwitch from 'primevue/toggleswitch'
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
+import Select from 'primevue/select';
 import { onMounted, ref, watch } from 'vue'
 import { useStore } from '@/stores/store'
 import { DARK_MODE_STORAGE_KEY } from '@/constants'
+import useLocale from '@/hooks/useLocale'
 
 const { isDarkMode: defaultDarkMode, setDarkMode, userInfo, setUser } = useStore()
 const isDarkMode = ref(defaultDarkMode)
 const route = useRoute()
 const userName = ref('')
+const { t, locale, localeOptions } = useLocale()
 
 const toggleDarkModeClass = () => {
   document.documentElement.classList.toggle(DARK_MODE_STORAGE_KEY)
@@ -24,6 +27,7 @@ const toggleDarkMode = () =>{
 watch(isDarkMode, () => {
   toggleDarkMode()
 })
+
 
 onMounted(() => {
   if (defaultDarkMode) {
@@ -57,24 +61,25 @@ const saveUserName = () => {
           </div>
 
           <div class="absolute top-3 right-2 lg:right-auto lg:top-auto lg:bottom-25 lg:left-24 grid grid-flow-col lg:grid-flow-row lg:mt-5 place-items-center gap-2 lg:gap-3">
+            <Select v-model="locale" :options="localeOptions" optionLabel="label" class="w-20" />
             <div class="text-xs font-bold">
-              <span class="hidden lg:inline-block">Modo Oscuro </span> <i :class="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'"></i>
+              <span class="hidden lg:inline-block">{{ t('darkMode') }} </span> <i :class="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'"></i>
             </div>
             <ToggleSwitch v-model="isDarkMode" />
           </div>
 
           <nav class="grid h-16 text-sm lg:text-base lg:px-0 px-4 grid-flow-col lg:grid-flow-row place-items-center gap-3 font-bold">
             <RouterLink to="/">
-              <i class="pi pi-chart-line" :style="{fontSize: '14px'}"></i> Resumen
+              <i class="pi pi-chart-line" :style="{fontSize: '14px'}"></i> {{ t('navigation.summary') }}
             </RouterLink>
             <RouterLink to="/incomes">
-              <i class="pi pi-dollar" :style="{fontSize: '14px'}"></i> Ingresos
+              <i class="pi pi-dollar" :style="{fontSize: '14px'}"></i> {{ t('navigation.incomes') }}
             </RouterLink>
             <RouterLink to="/expenses">
-              <i class="pi pi-wallet" :style="{fontSize: '14px'}"></i> Gastos
+              <i class="pi pi-wallet" :style="{fontSize: '14px'}"></i> {{ t('navigation.expenses') }}
             </RouterLink>
             <RouterLink to="/debts">
-              <i class="pi pi-credit-card" :style="{fontSize: '14px'}"></i> Deudas
+              <i class="pi pi-credit-card" :style="{fontSize: '14px'}"></i> {{ t('navigation.debts') }}
             </RouterLink>
           </nav>
 
@@ -89,7 +94,7 @@ const saveUserName = () => {
     </template>
     <template v-else>
       <div class="bg-zinc-900 w-full h-full">
-        <Dialog visible modal header="Bienvenido!" class="w-lg" :draggable="false" :closable="false">
+        <Dialog visible modal :header="t('welcome')" class="w-lg" :draggable="false" :closable="false">
           <p class="text-surface-500 dark:text-surface-400 mb-4">
             Balancash es tu asistente para controlar tus finanzas. Registra ingresos, gastos y deudas de forma sencilla, organízalos por categorías y revisa gráficas que muestran la evolución de tu dinero. Con un balance siempre actualizado, podrás tomar mejores decisiones y alcanzar tus metas financieras.
           </p>
