@@ -74,6 +74,9 @@ export const DEBTS_LOCAL_STORAGE_KEY = 'debts'
 
 export const DARK_MODE_STORAGE_KEY = 'dark-mode'
 
+export const LOCALE_STORAGE_KEY = 'locale'
+
+
 export const DEBTS_LABEL = 'Deudas'
 
 export const USER_INFO_STORAGE_KEY = 'user-info'
