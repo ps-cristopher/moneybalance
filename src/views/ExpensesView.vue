@@ -30,6 +30,7 @@ import type {
   IAmountType,
 } from '@/types';
 import useDateFilters from '@/hooks/useDateFilters';
+import useSearchFilter from '@/hooks/useSearchFilter';
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -76,6 +77,8 @@ const allExpensesToRender = computed(() => {
     return isStaticPaymentType || isInSelectedDate
   })
 })
+
+const { searchText, filteredItems: filteredExpenses } = useSearchFilter(allExpensesToRender)
 
 const isStaticPaymentType = computed(() => {
   return expenseType.value?.value === STATIC_PAYMENT_TYPE_VALUE || expenseType.value?.value === SUSCRIPTION_PAYMENT_TYPE_VALUE
@@ -213,7 +216,8 @@ const save = () => {
 
   <Divider />
   
-  <div class="grid place-content-end items-center mb-4 grid-flow-col gap-2">
+  <div class="grid grid-flow-col items-center mb-4 gap-2">
+    <InputText v-model="searchText" placeholder="Buscar" class="w-full" />
     <div>
       <Button label="Nuevo Gasto" icon="pi pi-plus" @click="openCreateModal" />
     </div>
@@ -221,8 +225,8 @@ const save = () => {
 
   <div class="mb-4">
     <DataTable
-      v-if="allExpensesToRender.length > 0"
-      :value="allExpensesToRender"
+      v-if="filteredExpenses.length > 0"
+      :value="filteredExpenses"
       tableStyle="min-width: 50rem"
       stripedRows
       :sort-order="-1"
@@ -246,7 +250,7 @@ const save = () => {
         </template>
       </Column>
       <Column>
-        <template #body="slotProps"">
+        <template #body="slotProps">
           <div class="flex gap-2">
             <Button icon="pi pi-pencil" outlined rounded severity="info" @click="edit(slotProps.data)" />
             <Button icon="pi pi-trash" outlined rounded severity="danger" @click="remove(slotProps.data)" />
