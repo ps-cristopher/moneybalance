@@ -27,6 +27,7 @@ import type {
   ICustomDate
 } from '@/types';
 import useDateFilters from '@/hooks/useDateFilters';
+import useSearchFilter from '@/hooks/useSearchFilter';
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -64,6 +65,8 @@ const debtsToRender = computed(() => {
     }
   })
 })
+
+const { searchText, filteredItems: filteredDebts } = useSearchFilter(debtsToRender)
 
 const modalHeader = computed(() => isEditMode.value ? 'Editar Deuda' : 'Nueva Deuda')
 
@@ -154,7 +157,7 @@ const save = () => {
     return
   }
 
-  let newDebt: IDebt = {
+  const newDebt: IDebt = {
     id: isEditMode.value && editingDebtId.value ? editingDebtId.value : Math.random().toString(36).substring(2, 9),
     type: debtType.value,
     name: debtName.value,
@@ -195,8 +198,9 @@ const save = () => {
   </div>
 
   <Divider />
-  
-  <div class="grid place-content-end items-center mb-4 grid-flow-col gap-2">
+
+  <div class="grid grid-flow-col items-center mb-4 gap-2">
+    <InputText v-model="searchText" placeholder="Buscar" class="w-full" />
     <div>
       <Button label="Nueva Deuda" icon="pi pi-plus" @click="openCreateModal" />
     </div>
@@ -204,8 +208,8 @@ const save = () => {
 
   <div class="mb-4">
     <DataTable
-      v-if="debtsToRender.length > 0"
-      :value="debtsToRender"
+      v-if="filteredDebts.length > 0"
+      :value="filteredDebts"
       tableStyle="min-width: 50rem"
       stripedRows
       :sort-order="-1"
@@ -233,7 +237,7 @@ const save = () => {
         </template>
       </Column>
       <Column>
-        <template #body="slotProps"">
+        <template #body="slotProps">
           <div class="flex gap-2">
             <Button icon="pi pi-pencil" outlined rounded severity="info" @click="edit(slotProps.data)" />
             <Button icon="pi pi-trash" outlined rounded severity="danger" @click="remove(slotProps.data)" />

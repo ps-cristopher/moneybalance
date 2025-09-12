@@ -29,6 +29,7 @@ import type {
   ICustomDate
 } from '@/types';
 import useDateFilters from '@/hooks/useDateFilters';
+import useSearchFilter from '@/hooks/useSearchFilter';
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -60,6 +61,8 @@ const incomesToRender = computed(() => {
     return income.type?.value === STATIC_PAYMENT_TYPE_VALUE || isInIncomePeriod
   })
 })
+
+const { searchText, filteredItems: filteredIncomes } = useSearchFilter(incomesToRender)
 
 const modalHeader = computed(() => isEditMode.value ? 'Editar Ingreso' : 'Nuevo Ingreso')
 
@@ -202,15 +205,16 @@ const save = () => {
   </div>
 
   <Divider />
-  
-  <div class="grid place-content-end mb-4">
+
+  <div class="grid grid-flow-col items-center mb-4 gap-2">
+    <InputText v-model="searchText" placeholder="Buscar" class="w-full" />
     <Button label="Nuevo Ingreso" icon="pi pi-plus" @click="openCreateModal" />
   </div>
 
   <div class="mb-4">
     <DataTable
-      v-if="incomesToRender.length > 0"
-      :value="incomesToRender"
+      v-if="filteredIncomes.length > 0"
+      :value="filteredIncomes"
       tableStyle="min-width: 50rem"
       stripedRows
       :sort-order="-1"
@@ -238,7 +242,7 @@ const save = () => {
         </template>
       </Column>
       <Column>
-        <template #body="slotProps"">
+        <template #body="slotProps">
           <div class="flex gap-2">
             <Button icon="pi pi-pencil" outlined rounded severity="info" @click="edit(slotProps.data)" />
             <Button icon="pi pi-trash" outlined rounded severity="danger" @click="remove(slotProps.data)" />
