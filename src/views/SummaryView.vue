@@ -45,6 +45,24 @@ const toggleItemPaid = (itemId: string, itemType: ItemType, isChecked: boolean) 
   }
 }
 
+const areAllItemsPaid = (items: { id: string }[], itemType: ItemType) => {
+  return items.length > 0 && items.every(item => isItemPaid(item.id, itemType))
+}
+
+const areSomeItemsPaid = (items: { id: string }[], itemType: ItemType) => {
+  return items.some(item => isItemPaid(item.id, itemType))
+}
+
+const toggleAllItemsPaid = (items: { id: string }[], itemType: ItemType, isChecked: boolean) => {
+  const updatedPaidItems = { ...paidItems.value }
+
+  items.forEach(item => {
+    updatedPaidItems[getPaidItemKey(item.id, itemType)] = isChecked
+  })
+
+  paidItems.value = updatedPaidItems
+}
+
 const generalExpensesToRender = computed(() => {
   return expenses.filter(expense => {
     const expenseMonth = expense.date?.month || 0
@@ -354,6 +372,14 @@ const balanceChartData = computed(() => {
             </template>
           </Column>
           <Column field="id" header="Pagado" class="w-1/5">
+            <template #header>
+              <Checkbox
+                :binary="true"
+                :model-value="areAllItemsPaid(suscriptionsToRender, ItemType.EXPENSE)"
+                :indeterminate="areSomeItemsPaid(suscriptionsToRender, ItemType.EXPENSE) && !areAllItemsPaid(suscriptionsToRender, ItemType.EXPENSE)"
+                @update:model-value="(value) => toggleAllItemsPaid(suscriptionsToRender, ItemType.EXPENSE, Boolean(value))"
+              />
+            </template>
             <template #body="slotProps">
               <Checkbox
                 :binary="true"
@@ -386,6 +412,14 @@ const balanceChartData = computed(() => {
             </template>
           </Column>
           <Column field="id" header="Pagado" class="w-1/5">
+            <template #header>
+              <Checkbox
+                :binary="true"
+                :model-value="areAllItemsPaid(staticExpensesToRender, ItemType.EXPENSE)"
+                :indeterminate="areSomeItemsPaid(staticExpensesToRender, ItemType.EXPENSE) && !areAllItemsPaid(staticExpensesToRender, ItemType.EXPENSE)"
+                @update:model-value="(value) => toggleAllItemsPaid(staticExpensesToRender, ItemType.EXPENSE, Boolean(value))"
+              />
+            </template>
             <template #body="slotProps">
               <Checkbox
                 :binary="true"
@@ -418,6 +452,14 @@ const balanceChartData = computed(() => {
             </template>
           </Column>
           <Column field="id" header="Pagado" class="w-1/5">
+            <template #header>
+              <Checkbox
+                :binary="true"
+                :model-value="areAllItemsPaid(generalExpensesToRender, ItemType.EXPENSE)"
+                :indeterminate="areSomeItemsPaid(generalExpensesToRender, ItemType.EXPENSE) && !areAllItemsPaid(generalExpensesToRender, ItemType.EXPENSE)"
+                @update:model-value="(value) => toggleAllItemsPaid(generalExpensesToRender, ItemType.EXPENSE, Boolean(value))"
+              />
+            </template>
             <template #body="slotProps">
               <Checkbox
                 :binary="true"
@@ -460,6 +502,14 @@ const balanceChartData = computed(() => {
             </template>
           </Column>
           <Column field="id" header="Pagado" class="w-1/5">
+            <template #header>
+              <Checkbox
+                :binary="true"
+                :model-value="areAllItemsPaid(debtsToRender, ItemType.DEBT)"
+                :indeterminate="areSomeItemsPaid(debtsToRender, ItemType.DEBT) && !areAllItemsPaid(debtsToRender, ItemType.DEBT)"
+                @update:model-value="(value) => toggleAllItemsPaid(debtsToRender, ItemType.DEBT, Boolean(value))"
+              />
+            </template>
             <template #body="slotProps">
               <Checkbox
                 :binary="true"
