@@ -347,9 +347,6 @@ const balanceChartData = computed(() => {
               <AmountItem :amount="slotProps.data.amount" is-currency />
             </template>
           </Column>
-          <Column />
-          <Column />
-          <Column />
         </template>
       </SummaryTable>
 
@@ -372,7 +369,6 @@ const balanceChartData = computed(() => {
               <AmountItem :amount="slotProps.data.amount" is-currency />
             </template>
           </Column>
-          <Column />
           <Column />
           <Column field="id" class="w-1/5">
             <template #header>
@@ -419,7 +415,6 @@ const balanceChartData = computed(() => {
             </template>
           </Column>
           <Column />
-          <Column />
           <Column field="id" class="w-1/5">
             <template #header>
               <div class="flex items-center justify-end gap-2 w-full">
@@ -464,7 +459,6 @@ const balanceChartData = computed(() => {
               <AmountItem :amount="slotProps.data.amount" is-currency />
             </template>
           </Column>
-          <Column />
           <Column />
           <Column field="id" class="w-1/5">
             <template #header>
