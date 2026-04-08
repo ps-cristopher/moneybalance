@@ -347,8 +347,6 @@ const balanceChartData = computed(() => {
               <AmountItem :amount="slotProps.data.amount" is-currency />
             </template>
           </Column>
-          <Column />
-          <Column />
         </template>
       </SummaryTable>
 
@@ -371,7 +369,8 @@ const balanceChartData = computed(() => {
               <AmountItem :amount="slotProps.data.amount" is-currency />
             </template>
           </Column>
-          <Column field="id" header="Pagado" class="w-1/5">
+          <Column />
+          <Column field="id" class="w-1/5">
             <template #header>
               <div class="flex items-center justify-end gap-2 w-full">
                 <span>Pagado</span>
@@ -393,7 +392,6 @@ const balanceChartData = computed(() => {
               </div>
             </template>
           </Column>
-          <Column />
         </template>
       </SummaryTable>
 
@@ -416,7 +414,8 @@ const balanceChartData = computed(() => {
               <AmountItem :amount="slotProps.data.amount" is-currency />
             </template>
           </Column>
-          <Column field="id" header="Pagado" class="w-1/5">
+          <Column />
+          <Column field="id" class="w-1/5">
             <template #header>
               <div class="flex items-center justify-end gap-2 w-full">
                 <span>Pagado</span>
@@ -438,7 +437,6 @@ const balanceChartData = computed(() => {
               </div>
             </template>
           </Column>
-          <Column />
         </template>
       </SummaryTable>
 
@@ -461,7 +459,8 @@ const balanceChartData = computed(() => {
               <AmountItem :amount="slotProps.data.amount" is-currency />
             </template>
           </Column>
-          <Column field="id" header="Pagado" class="w-1/5">
+          <Column />
+          <Column field="id" class="w-1/5">
             <template #header>
               <div class="flex items-center justify-end gap-2 w-full">
                 <span>Pagado</span>
@@ -483,7 +482,6 @@ const balanceChartData = computed(() => {
               </div>
             </template>
           </Column>
-          <Column />
         </template>
       </SummaryTable>
 
@@ -516,7 +514,7 @@ const balanceChartData = computed(() => {
               <AmountItem :amount="slotProps.data.remainingAmountToPay" is-currency />
             </template>
           </Column>
-          <Column field="id" header="Pagado" class="w-1/5">
+          <Column field="id" class="w-1/5">
             <template #header>
               <div class="flex items-center justify-end gap-2 w-full">
                 <span>Pagado</span>
