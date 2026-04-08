@@ -13,6 +13,11 @@ export enum Month {
   DECEMBER = 12,
 }
 
+export enum ItemType {
+  EXPENSE = 'expense',
+  DEBT = 'debt',
+}
+
 export interface IListOption {
   value: number;
   label: string;
