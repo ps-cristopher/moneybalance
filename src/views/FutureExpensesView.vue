@@ -12,6 +12,7 @@ import Column from 'primevue/column'
 import AmountItem from '@/components/SummaryTable/AmountItem.vue'
 import { computed, ref } from 'vue'
 import { useStore } from '@/stores/store'
+import { storeToRefs } from 'pinia'
 import { useToast } from 'primevue/usetoast'
 import { useConfirm } from 'primevue/useconfirm'
 import useSearchFilter from '@/hooks/useSearchFilter'
@@ -19,12 +20,9 @@ import type { IFutureExpense, IFutureSubExpense } from '@/types'
 
 const toast = useToast()
 const confirm = useConfirm()
-const {
-  futureExpenses,
-  updateFutureExpense,
-  removeFutureExpense,
-  setFutureExpenses,
-} = useStore()
+const store = useStore()
+const { futureExpenses } = storeToRefs(store)
+const { updateFutureExpense, removeFutureExpense, setFutureExpenses } = store
 
 const isOpenModal = ref(false)
 const isEditMode = ref(false)
@@ -40,13 +38,13 @@ const totalAmount = computed(() => {
 })
 
 const sortedFutureExpenses = computed(() => {
-  return [...futureExpenses].sort((a, b) => a.priority - b.priority)
+  return [...futureExpenses.value].sort((a, b) => a.priority - b.priority)
 })
 
 const { searchText, filteredItems: filteredFutureExpenses } = useSearchFilter(sortedFutureExpenses)
 
 const priorityOptions = computed(() => {
-  const size = futureExpenses.length + (isEditMode.value ? 0 : 1)
+  const size = futureExpenses.value.length + (isEditMode.value ? 0 : 1)
   return Array.from({ length: size }, (_, index) => ({
     value: index + 1,
     label: `Prioridad ${index + 1}`,
@@ -103,7 +101,7 @@ const openCreateModal = () => {
   clearForm()
   isEditMode.value = false
   editingExpenseId.value = null
-  selectedPriority.value = futureExpenses.length + 1
+  selectedPriority.value = futureExpenses.value.length + 1
   isOpenModal.value = true
 }
 
@@ -145,7 +143,7 @@ const remove = (futureExpense: IFutureExpense) => {
     },
     accept: () => {
       removeFutureExpense(futureExpense)
-      setFutureExpenses(normalizePriorities(futureExpenses))
+      setFutureExpenses(normalizePriorities(futureExpenses.value))
       showSuccess('Eliminación exitosa', 'Se ha eliminado tu gasto futuro')
     },
     reject: () => {
@@ -177,7 +175,7 @@ const save = () => {
     return
   }
 
-  const currentItems = futureExpenses.filter((item) => item.id !== editingExpenseId.value)
+  const currentItems = futureExpenses.value.filter((item) => item.id !== editingExpenseId.value)
 
   const newFutureExpense: IFutureExpense = {
     id: isEditMode.value && editingExpenseId.value ? editingExpenseId.value : Math.random().toString(36).substring(2, 9),
