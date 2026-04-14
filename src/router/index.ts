@@ -24,6 +24,11 @@ const router = createRouter({
       name: 'debts',
       component: () => import('@/views/DebtsView.vue'),
     },
+    {
+      path: '/future-expenses',
+      name: 'future-expenses',
+      component: () => import('@/views/FutureExpensesView.vue'),
+    },
   ],
 })
 

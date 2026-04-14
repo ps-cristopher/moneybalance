@@ -76,6 +76,9 @@ const saveUserName = () => {
             <RouterLink to="/debts">
               <i class="pi pi-credit-card" :style="{fontSize: '14px'}"></i> Deudas
             </RouterLink>
+            <RouterLink to="/future-expenses">
+              <i class="pi pi-calendar-clock" :style="{fontSize: '14px'}"></i> Gastos futuros
+            </RouterLink>
           </nav>
 
           <div class="text-xs font-semibold absolute bottom-8 left-26 hidden lg:grid grid-flow-row mt-5 place-items-center gap-1">
