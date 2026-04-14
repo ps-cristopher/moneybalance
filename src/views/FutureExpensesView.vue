@@ -21,7 +21,6 @@ const toast = useToast()
 const confirm = useConfirm()
 const {
   futureExpenses,
-  addFutureExpense,
   updateFutureExpense,
   removeFutureExpense,
   setFutureExpenses,
@@ -62,6 +61,28 @@ const normalizePriorities = (items: IFutureExpense[]) => {
   return [...items]
     .sort((a, b) => a.priority - b.priority)
     .map((item, index) => ({ ...item, priority: index + 1 }))
+}
+
+const getPriorityBounded = (priority: number, maxPriority: number) => {
+  return Math.max(1, Math.min(priority, maxPriority))
+}
+
+const insertFutureExpenseWithPriority = (items: IFutureExpense[], newItem: IFutureExpense) => {
+  const boundedPriority = getPriorityBounded(newItem.priority, items.length + 1)
+  const shiftedItems = items.map((item) => {
+    if (item.priority >= boundedPriority) {
+      return { ...item, priority: item.priority + 1 }
+    }
+    return { ...item }
+  })
+
+  return normalizePriorities([
+    ...shiftedItems,
+    {
+      ...newItem,
+      priority: boundedPriority,
+    },
+  ])
 }
 
 const clearForm = () => {
@@ -165,14 +186,16 @@ const save = () => {
     subExpenses: subExpenses.value.map((item) => ({ ...item })),
   }
 
-  const orderedItems = normalizePriorities([...currentItems, newFutureExpense])
+  const orderedItems = insertFutureExpenseWithPriority(currentItems, newFutureExpense)
 
   if (isEditMode.value) {
-    updateFutureExpense(newFutureExpense)
+    updateFutureExpense({
+      ...newFutureExpense,
+      priority: getPriorityBounded(selectedPriority.value, currentItems.length + 1),
+    })
     setFutureExpenses(orderedItems)
     showSuccess('Actualización exitosa', 'Se ha actualizado tu gasto futuro')
   } else {
-    addFutureExpense(newFutureExpense)
     setFutureExpenses(orderedItems)
     showSuccess('Registro exitoso', 'Se ha registrado tu nuevo gasto futuro')
   }
