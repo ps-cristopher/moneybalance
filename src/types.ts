@@ -63,19 +63,6 @@ export interface IExpense {
   date?: ICustomDate;
 }
 
-export interface IFutureSubExpense {
-  id: string;
-  name: string;
-  amount: number;
-}
-
-export interface IFutureExpense {
-  id: string;
-  name: string;
-  priority: number;
-  subExpenses: IFutureSubExpense[];
-}
-
 export interface IDebt {
   id: string;
   name: string;

@@ -72,8 +72,6 @@ export const EXPENSES_LOCAL_STORAGE_KEY = 'expenses'
 
 export const DEBTS_LOCAL_STORAGE_KEY = 'debts'
 
-export const FUTURE_EXPENSES_LOCAL_STORAGE_KEY = 'future-expenses'
-
 export const DARK_MODE_STORAGE_KEY = 'dark-mode'
 
 export const DEBTS_LABEL = 'Deudas'
