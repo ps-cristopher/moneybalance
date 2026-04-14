@@ -11,11 +11,13 @@ import {
   EXPENSES_LOCAL_STORAGE_KEY,
   DEBT_TYPES,
   DEBTS_LOCAL_STORAGE_KEY,
-  USER_INFO_STORAGE_KEY
+  USER_INFO_STORAGE_KEY,
+  FUTURE_EXPENSES_LOCAL_STORAGE_KEY
 } from '@/constants'
 import type {
   IAmountType,
   IDebt,
+  IFutureExpense,
   IDebtType,
   IExpense,
   IExpenseType,
@@ -43,6 +45,7 @@ export const useStore = defineStore('store', () => {
   const incomes = useStorage<IIncome[]>(INCOMES_LOCAL_STORAGE_KEY, [])
   const expenses = useStorage<IExpense[]>(EXPENSES_LOCAL_STORAGE_KEY, [])
   const debts = useStorage<IDebt[]>(DEBTS_LOCAL_STORAGE_KEY, [])
+  const futureExpenses = useStorage<IFutureExpense[]>(FUTURE_EXPENSES_LOCAL_STORAGE_KEY, [])
 
   const setDarkMode = (value: boolean) => {
     isDarkMode.value = value
@@ -96,6 +99,27 @@ export const useStore = defineStore('store', () => {
     debts.value.splice(debtIndex, 1)
   }
 
+
+  const addFutureExpense = (futureExpense: IFutureExpense) => {
+    futureExpenses.value.push(futureExpense)
+  }
+
+  const updateFutureExpense = (updatedFutureExpense: IFutureExpense) => {
+    const index = futureExpenses.value.findIndex((e) => e.id === updatedFutureExpense.id)
+    if (index !== -1) {
+      futureExpenses.value[index] = updatedFutureExpense
+    }
+  }
+
+  const removeFutureExpense = (futureExpense: IFutureExpense) => {
+    const expenseIndex = futureExpenses.value.findIndex((e) => e.id === futureExpense.id)
+    futureExpenses.value.splice(expenseIndex, 1)
+  }
+
+  const setFutureExpenses = (newFutureExpenses: IFutureExpense[]) => {
+    futureExpenses.value = newFutureExpenses
+  }
+
   const setUser = (user: IUserInfo) => {
     userInfo.value = user
   }
@@ -121,6 +145,11 @@ export const useStore = defineStore('store', () => {
     addDebt,
     updateDebt,
     removeDebt,
+    futureExpenses,
+    addFutureExpense,
+    updateFutureExpense,
+    removeFutureExpense,
+    setFutureExpenses,
     userInfo,
     setUser
   }
