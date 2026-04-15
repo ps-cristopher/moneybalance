@@ -206,9 +206,11 @@ const save = () => {
 
   <Divider />
 
-  <div class="grid grid-flow-col items-center mb-4 gap-2">
+  <div class="mb-4">
+    <div class="flex justify-end mb-2">
+      <Button label="Nuevo Ingreso" icon="pi pi-plus" @click="openCreateModal" />
+    </div>
     <InputText v-model="searchText" placeholder="Buscar" class="w-full" />
-    <Button label="Nuevo Ingreso" icon="pi pi-plus" @click="openCreateModal" />
   </div>
 
   <div class="mb-4">
