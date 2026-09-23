@@ -81,9 +81,9 @@ const saveUserName = () => {
             </RouterLink>
           </nav>
 
-          <div class="text-xs font-semibold absolute bottom-8 left-26 hidden lg:grid grid-flow-row mt-5 place-items-center gap-1">
-            created by <img src="@/assets/logo.png" alt="Money Balance" class="w-20" />
-          </div>
+          <a href="https://cristopherps.dev/resume/" class="text-xs font-semibold absolute bottom-8 left-26 hidden lg:grid grid-flow-row mt-5 place-items-center gap-1 cursor-pointer">
+            Created By <img src="@/assets/logo.png" alt="Money Balance" class="w-20" />
+          </a>
         </header>
         <div :class="`h-full overflow-auto ${route.name === 'summary' ? 'pb-5' : 'p-5'}`">
           <RouterView />
@@ -108,7 +108,9 @@ const saveUserName = () => {
       </div>
     </template>
     <div class="bg-zinc-900 w-full text-xs font-semibold fixed p-2 bottom-0 left-0 lg:hidden grid grid-flow-row mt-5 place-items-center gap-1">
-      <img src="@/assets/logo.png" alt="Money Balance" class="w-18" />
+      <a href="https://cristopherps.dev/resume/" class="cursor-pointer">
+        <img src="@/assets/logo.png" alt="Money Balance" class="w-18" />
+      </a>
     </div>
   </div>
 </template>
