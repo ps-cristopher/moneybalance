@@ -244,19 +244,20 @@ const balanceChartData = computed(() => {
 
 <template>
   <main>
-    <div class="grid grid-flow-row lg:grid-flow-col gap-2 mb-4 sticky top-0 bg-s z-10 p-5 bg-sky-950">
-      <div class="grid items-center justify-start lg:justify-end">
+    <div class="grid gap-2 mb-4 sticky top-0 bg-s z-10 p-5 bg-sky-950 lg:grid-cols-[minmax(0,1fr)_auto_auto]">
+      <div class="grid items-center justify-start">
         <h1 class="text-lg lg:text-xl font-semibold text-white">
           <i class="pi pi-chart-line" style="font-size: 14px;"></i>
-          Proyección de balance para
+          Balance proyectado para
         </h1>
       </div>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-2 gap-4 lg:justify-self-end">
         <Select v-model="selectedMonth" :options="monthsToRender" optionLabel="label" placeholder="Mes" />
         <Select v-model="selectedYear" :options="yearsToRender" optionLabel="label" placeholder="Año" />
       </div>
-      <div class="grid justify-end">
+      <div class="grid lg:justify-self-end">
         <Button
+          class="w-full lg:w-auto"
           label="Agregar"
           icon="pi pi-plus"
           aria-label="Agregar un registro financiero"
