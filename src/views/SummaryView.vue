@@ -244,7 +244,7 @@ const balanceChartData = computed(() => {
 
 <template>
   <main>
-    <div class="grid gap-2 mb-4 sticky top-0 bg-s z-10 p-5 bg-sky-950 lg:grid-cols-[minmax(0,1fr)_auto_auto]">
+    <div class="grid gap-2 mb-4 sticky top-0 bg-s z-10 p-5 bg-sky-950 lg:grid-cols-[auto_auto_auto] lg:justify-end">
       <div class="grid items-center justify-start">
         <h1 class="text-lg lg:text-xl font-semibold text-white">
           <i class="pi pi-chart-line" style="font-size: 14px;"></i>
