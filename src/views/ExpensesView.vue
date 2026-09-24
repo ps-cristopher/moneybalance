@@ -33,9 +33,11 @@ import useDateFilters from '@/hooks/useDateFilters';
 import useSearchFilter from '@/hooks/useSearchFilter';
 import useDefaultViewAction from '@/hooks/useDefaultViewAction';
 import { ViewDefaultActions } from '@/types';
+import { useRoute } from 'vue-router';
 
 const toast = useToast()
 const confirm = useConfirm()
+const route = useRoute()
 const {
   expenseTypes,
   amountTypes,
@@ -90,6 +92,8 @@ const openCreateModal = () => {
   clearForm()
   isEditMode.value = false
   editingExpenseId.value = null
+  const selectedExpenseType = Number(route.query.expenseType)
+  expenseType.value = expenseTypes.find(type => type.value === selectedExpenseType) || null
   isOpenModal.value = true
 }
 

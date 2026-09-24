@@ -8,8 +8,10 @@ import Select from 'primevue/select';
 import Checkbox from 'primevue/checkbox';
 import Chart from 'primevue/chart';
 import Column from 'primevue/column';
+import Menu from 'primevue/menu';
 import { computed, ref } from 'vue';
 import { useStorage } from '@vueuse/core';
+import { useRouter } from 'vue-router';
 import AmountCard from '@/components/AmountCard.vue';
 import SummaryTable from '@/components/SummaryTable/SummaryTable.vue';
 import AmountItem from '@/components/SummaryTable/AmountItem.vue';
@@ -17,6 +19,35 @@ import AnnualSummary from '@/components/AnnualSummary.vue';
 import { formatCurrency, getRemainingAmountToPay, getRemainingPayments, periodIncludesCustomDate } from '@/utils';
 
 const { months, years, incomes, expenses, debts } = useStore()
+const router = useRouter()
+const addMenu = ref()
+
+const addMenuItems = [
+  {
+    label: 'Nuevo ingreso',
+    icon: 'pi pi-money-bill',
+    command: () => router.push('/incomes?openModal=true'),
+  },
+  {
+    label: 'Nuevo gasto',
+    icon: 'pi pi-wallet',
+    command: () => router.push('/expenses?openModal=true'),
+  },
+  {
+    label: 'Nueva suscripción',
+    icon: 'pi pi-receipt',
+    command: () => router.push('/expenses?openModal=true&expenseType=3'),
+  },
+  {
+    label: 'Nueva deuda',
+    icon: 'pi pi-credit-card',
+    command: () => router.push('/debts?openModal=true'),
+  },
+]
+
+const toggleAddMenu = (event: Event) => {
+  addMenu.value.toggle(event)
+}
 
 const currentMonth = new Date().getMonth() + 1
 const currentYear = new Date().getFullYear()
@@ -224,6 +255,16 @@ const balanceChartData = computed(() => {
         <Select v-model="selectedMonth" :options="monthsToRender" optionLabel="label" placeholder="Mes" />
         <Select v-model="selectedYear" :options="yearsToRender" optionLabel="label" placeholder="Año" />
       </div>
+      <div class="grid justify-end">
+        <Button
+          label="Agregar"
+          icon="pi pi-plus"
+          aria-label="Agregar un registro financiero"
+          aria-haspopup="menu"
+          @click="toggleAddMenu"
+        />
+        <Menu ref="addMenu" :model="addMenuItems" popup />
+      </div>
     </div>
 
     <div class="p-5">
@@ -335,9 +376,10 @@ const balanceChartData = computed(() => {
         icon-class="pi-money-bill"
         sort-field="amount"
         title-label="Ingresos"
-        empty-state-label="No hay ingresos registrados para la fecha seleccionada"
-        empty-state-action-label="Nuevo Ingreso"
-        empty-state-action-to="/incomes?openModal=true"
+        empty-state-label="No hay ingresos registrados"
+        contextual-action-label="Agregar ingreso"
+        contextual-action-to="/incomes?openModal=true"
+        :initial-open="incomesToRender.length > 0"
         :rows="incomesToRender"
         :sub-title-label="formatCurrency(totalIncomes)"
       >
@@ -359,9 +401,10 @@ const balanceChartData = computed(() => {
         icon-class="pi-receipt"
         sort-field="amount"
         title-label="Suscripciones"
-        empty-state-label="No hay suscripciones registradas para la fecha seleccionada"
-        empty-state-action-label="Nuevo Gasto"
-        empty-state-action-to="/expenses?openModal=true"
+        empty-state-label="No hay suscripciones registradas"
+        contextual-action-label="Agregar suscripción"
+        contextual-action-to="/expenses?openModal=true&expenseType=3"
+        :initial-open="suscriptionsToRender.length > 0"
         :rows="suscriptionsToRender"
         :sub-title-label="formatCurrency(totalSuscriptions)"
       >
@@ -406,9 +449,10 @@ const balanceChartData = computed(() => {
         icon-class="pi-wallet"
         sort-field="amount"
         title-label="Gastos fijos"
-        empty-state-label="No hay gastos registrados para la fecha seleccionada"
-        empty-state-action-label="Nuevo Gasto"
-        empty-state-action-to="/expenses?openModal=true"
+        empty-state-label="No hay gastos registrados"
+        contextual-action-label="Agregar gasto fijo"
+        contextual-action-to="/expenses?openModal=true&expenseType=1"
+        :initial-open="staticExpensesToRender.length > 0"
         :rows="staticExpensesToRender"
         :sub-title-label="formatCurrency(totalStaticExpenses)"
       >
@@ -453,9 +497,10 @@ const balanceChartData = computed(() => {
         icon-class="pi-wallet"
         sort-field="amount"
         title-label="Retiros y otros gastos"
-        empty-state-label="No hay gastos registrados para la fecha seleccionada"
-        empty-state-action-label="Nuevo Gasto"
-        empty-state-action-to="/expenses?openModal=true"
+        empty-state-label="No hay gastos registrados"
+        contextual-action-label="Agregar retiro o gasto"
+        contextual-action-to="/expenses?openModal=true"
+        :initial-open="generalExpensesToRender.length > 0"
         :rows="generalExpensesToRender"
         :sub-title-label="formatCurrency(totalGeneralExpenses)"
       >
@@ -500,9 +545,10 @@ const balanceChartData = computed(() => {
         icon-class="pi-credit-card"
         sort-field="amount"
         title-label="Deudas"
-        empty-state-label="No hay deudas registradas para la fecha seleccionada"
-        empty-state-action-label="Nueva Deuda"
-        empty-state-action-to="/debts?openModal=true"
+        empty-state-label="No hay deudas registradas"
+        contextual-action-label="Agregar deuda"
+        contextual-action-to="/debts?openModal=true"
+        :initial-open="debtsToRender.length > 0"
         :rows="debtsToRender"
         :sub-title-label="formatCurrency(totalDebts)"
       >

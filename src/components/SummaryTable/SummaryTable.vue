@@ -14,8 +14,8 @@ const props = withDefaults(defineProps<{
   rows: IIncome[] | IExpense[] | IDebt[],
   class?: string,
   iconClass?: string,
-  emptyStateActionLabel?: string,
-  emptyStateActionTo?: string,
+  contextualActionLabel?: string,
+  contextualActionTo?: string,
 }>(), {
   initialOpen: true,
 });
@@ -29,7 +29,13 @@ const toggleContent = () => {
 
 <template>
   <div :class="props.class">
-    <button @click="toggleContent" class="grid grid-cols-2 rounded-sm hover:bg-sky-950 hover:text-white p-4 cursor-pointer w-full">
+    <div class="grid grid-cols-[1fr_auto] items-center rounded-sm hover:bg-sky-950 hover:text-white">
+      <button
+        type="button"
+        :aria-expanded="isShowingContent"
+        class="grid grid-cols-2 p-4 cursor-pointer w-full text-left"
+        @click="toggleContent"
+      >
       <div class="text-lg lg:text-xl font-bold grid place-content-start">
         <div>
           <div class="mr-2 inline-block">
@@ -47,7 +53,22 @@ const toggleContent = () => {
       <div class="text-lg lg:text-xl font-bold grid place-content-end">
         {{ props.subTitleLabel }}
       </div>
-    </button>
+      </button>
+      <RouterLink
+        v-if="props.contextualActionLabel && props.contextualActionTo"
+        :to="props.contextualActionTo"
+        class="mr-2"
+      >
+        <Button
+          icon="pi pi-plus"
+          text
+          rounded
+          :aria-label="props.contextualActionLabel"
+          :title="props.contextualActionLabel"
+          class="!w-10 !h-10"
+        />
+      </RouterLink>
+    </div>
 
     <Divider />
 
@@ -67,18 +88,11 @@ const toggleContent = () => {
         >
           <slot name="columns" />
         </DataTable>
-        <div v-else class="grid place-content-center gap-4">
+        <div v-else class="grid place-content-center py-4">
           <span class="text-gray-500 text-lg">
             <i class="pi pi-info-circle" style="font-size: 16px;"></i>
             {{ props.emptyStateLabel }}
           </span>
-          <RouterLink
-            v-if="props.emptyStateActionLabel && props.emptyStateActionTo"
-            :to="props.emptyStateActionTo"
-            class="justify-self-center"
-          >
-            <Button :label="props.emptyStateActionLabel" icon="pi pi-plus" />
-          </RouterLink>
         </div>
       </div>
     </Transition>
