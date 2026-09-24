@@ -336,6 +336,8 @@ const balanceChartData = computed(() => {
         sort-field="amount"
         title-label="Ingresos"
         empty-state-label="No hay ingresos registrados para la fecha seleccionada"
+        empty-state-action-label="Nuevo Ingreso"
+        empty-state-action-to="/incomes?openModal=true"
         :rows="incomesToRender"
         :sub-title-label="formatCurrency(totalIncomes)"
       >
@@ -358,6 +360,8 @@ const balanceChartData = computed(() => {
         sort-field="amount"
         title-label="Suscripciones"
         empty-state-label="No hay suscripciones registradas para la fecha seleccionada"
+        empty-state-action-label="Nuevo Gasto"
+        empty-state-action-to="/expenses?openModal=true"
         :rows="suscriptionsToRender"
         :sub-title-label="formatCurrency(totalSuscriptions)"
       >
@@ -403,6 +407,8 @@ const balanceChartData = computed(() => {
         sort-field="amount"
         title-label="Gastos fijos"
         empty-state-label="No hay gastos registrados para la fecha seleccionada"
+        empty-state-action-label="Nuevo Gasto"
+        empty-state-action-to="/expenses?openModal=true"
         :rows="staticExpensesToRender"
         :sub-title-label="formatCurrency(totalStaticExpenses)"
       >
@@ -448,6 +454,8 @@ const balanceChartData = computed(() => {
         sort-field="amount"
         title-label="Retiros y otros gastos"
         empty-state-label="No hay gastos registrados para la fecha seleccionada"
+        empty-state-action-label="Nuevo Gasto"
+        empty-state-action-to="/expenses?openModal=true"
         :rows="generalExpensesToRender"
         :sub-title-label="formatCurrency(totalGeneralExpenses)"
       >
@@ -493,6 +501,8 @@ const balanceChartData = computed(() => {
         sort-field="amount"
         title-label="Deudas"
         empty-state-label="No hay deudas registradas para la fecha seleccionada"
+        empty-state-action-label="Nueva Deuda"
+        empty-state-action-to="/debts?openModal=true"
         :rows="debtsToRender"
         :sub-title-label="formatCurrency(totalDebts)"
       >
