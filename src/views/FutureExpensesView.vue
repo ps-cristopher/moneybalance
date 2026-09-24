@@ -15,6 +15,8 @@ import { useStore } from '@/stores/store'
 import { useToast } from 'primevue/usetoast'
 import { useConfirm } from 'primevue/useconfirm'
 import useSearchFilter from '@/hooks/useSearchFilter'
+import useDefaultViewAction from '@/hooks/useDefaultViewAction'
+import { ViewDefaultActions } from '@/types'
 import type { IFutureExpense, IFutureSubExpense } from '@/types'
 
 const toast = useToast()
@@ -106,6 +108,10 @@ const openCreateModal = () => {
   selectedPriority.value = futureExpenses.length + 1
   isOpenModal.value = true
 }
+
+useDefaultViewAction({
+  [ViewDefaultActions.OPEN_MODAL]: openCreateModal,
+})
 
 const addSubExpense = () => {
   subExpenses.value.push({

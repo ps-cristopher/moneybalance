@@ -13,7 +13,9 @@ const props = withDefaults(defineProps<{
   emptyStateLabel: string,
   rows: IIncome[] | IExpense[] | IDebt[],
   class?: string,
-  iconClass?: string
+  iconClass?: string,
+  emptyStateActionLabel?: string,
+  emptyStateActionTo?: string,
 }>(), {
   initialOpen: true,
 });
@@ -65,11 +67,18 @@ const toggleContent = () => {
         >
           <slot name="columns" />
         </DataTable>
-        <div v-else class="grid place-content-center">
+        <div v-else class="grid place-content-center gap-4">
           <span class="text-gray-500 text-lg">
             <i class="pi pi-info-circle" style="font-size: 16px;"></i>
             {{ props.emptyStateLabel }}
           </span>
+          <RouterLink
+            v-if="props.emptyStateActionLabel && props.emptyStateActionTo"
+            :to="props.emptyStateActionTo"
+            class="justify-self-center"
+          >
+            <Button :label="props.emptyStateActionLabel" icon="pi pi-plus" />
+          </RouterLink>
         </div>
       </div>
     </Transition>

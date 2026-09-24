@@ -30,6 +30,8 @@ import type {
 } from '@/types';
 import useDateFilters from '@/hooks/useDateFilters';
 import useSearchFilter from '@/hooks/useSearchFilter';
+import useDefaultViewAction from '@/hooks/useDefaultViewAction';
+import { ViewDefaultActions } from '@/types';
 
 const toast = useToast()
 const confirm = useConfirm()
@@ -84,6 +86,10 @@ const openCreateModal = () => {
   editingIncomeId.value = null
   isOpenModal.value = true
 }
+
+useDefaultViewAction({
+  [ViewDefaultActions.OPEN_MODAL]: openCreateModal,
+})
 
 const showSuccess = (summary: string, detail: string) => {
   toast.add({ severity: 'success', summary: summary, detail: detail, life: 5000 })

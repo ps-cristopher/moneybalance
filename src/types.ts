@@ -18,6 +18,10 @@ export enum ItemType {
   DEBT = 'debt',
 }
 
+export enum ViewDefaultActions {
+  OPEN_MODAL = 'openModal',
+}
+
 export interface IListOption {
   value: number;
   label: string;
