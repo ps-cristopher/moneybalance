@@ -7,6 +7,7 @@ import Aura from '@primeuix/themes/aura';
 import Button from "primevue/button"
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
+import SelectButton from 'primevue/selectbutton';
 
 import App from './App.vue'
 import router from './router'
@@ -25,6 +26,9 @@ app.use(PrimeVue, {
 });
 app.use(ToastService)
 app.use(ConfirmationService)
+// PrimeVue's component name intentionally matches the native element name used throughout templates.
+// eslint-disable-next-line vue/multi-word-component-names, vue/no-reserved-component-names
 app.component('Button', Button)
+app.component('SelectButton', SelectButton)
 
 app.mount('#app')

@@ -27,17 +27,17 @@ export interface IListOption {
   label: string;
 }
 
-export interface IIncomeType extends IListOption {}
+export type IIncomeType = IListOption
 
-export interface IExpenseType extends IListOption {}
+export type IExpenseType = IListOption
 
-export interface IAmountType extends IListOption {}
+export type IAmountType = IListOption
 
-export interface IDebtType extends IListOption {}
+export type IDebtType = IListOption
 
-export interface IMonth extends IListOption {}
+export type IMonth = IListOption
 
-export interface IYear extends IListOption {}
+export type IYear = IListOption
 
 export interface ICustomDate {
   year: number;
