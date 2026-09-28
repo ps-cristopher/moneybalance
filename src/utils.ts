@@ -1,8 +1,9 @@
-import { MONTH_LABEL, STATIC_PAYMENT_TYPE_VALUE, SUSCRIPTION_PAYMENT_TYPE_VALUE } from "@/constants"
-import type { ICustomDate, ICustomDateRange, IDebt, IExpense, IIncome, IYear } from "@/types"
+import { STATIC_PAYMENT_TYPE_VALUE, SUSCRIPTION_PAYMENT_TYPE_VALUE } from "@/constants"
+import { locale, getLocaleMessages } from "@/i18n"
+import type { ICustomDate, ICustomDateRange, IDebt, IExpense, IYear } from "@/types"
 
 export const formatCurrency = (value: number) => {
-  return value.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })
+  return value.toLocaleString(locale.value === 'en' ? 'en-US' : 'es-MX', { style: 'currency', currency: 'MXN' })
 }
 
 export const formatCustomDate = (date?: ICustomDate) => {
@@ -10,7 +11,7 @@ export const formatCustomDate = (date?: ICustomDate) => {
     return '-'
   }
 
-  return `${MONTH_LABEL[date.month]} - ${date.year}`
+  return `${getLocaleMessages().months[date.month - 1]} - ${date.year}`
 }
 
 export const getYearsForSelect = (startYear: number, endYear: number): IYear[] => {

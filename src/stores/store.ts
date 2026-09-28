@@ -1,19 +1,16 @@
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
 import { getYearsForSelect } from '@/utils'
 import {
-  INCOME_TYPES,
-  MONTHS,
   DARK_MODE_STORAGE_KEY,
   INCOMES_LOCAL_STORAGE_KEY,
-  EXPENSE_TYPES, AMOUNT_TYPES,
   EXPENSES_LOCAL_STORAGE_KEY,
-  DEBT_TYPES,
   DEBTS_LOCAL_STORAGE_KEY,
   USER_INFO_STORAGE_KEY,
   FUTURE_EXPENSES_LOCAL_STORAGE_KEY
 } from '@/constants'
+import { getLocaleMessages } from '@/i18n'
 import type {
   IAmountType,
   IDebt,
@@ -24,8 +21,7 @@ import type {
   IIncome,
   IIncomeType,
   IMonth,
-  IUserInfo,
-  IYear
+  IUserInfo
 } from '@/types'
 
 const START_YEAR = 2024
@@ -36,12 +32,15 @@ export const useStore = defineStore('store', () => {
   const userInfo = useStorage<IUserInfo>(USER_INFO_STORAGE_KEY, {
     name: null, 
   })
-  const incomeTypes = ref<IIncomeType[]>(INCOME_TYPES)
-  const expenseTypes = ref<IExpenseType[]>(EXPENSE_TYPES)
-  const amountTypes = ref<IAmountType[]>(AMOUNT_TYPES)
-  const debtTypes = ref<IDebtType[]>(DEBT_TYPES)
-  const months = ref<IMonth[]>(MONTHS)
-  const years = ref<IYear[]>(getYearsForSelect(START_YEAR, END_YEAR))
+  const localizedOptions = <T extends IIncomeType | IExpenseType | IAmountType | IDebtType | IMonth>(labels: readonly string[]) =>
+    labels.map((label, index) => ({ value: index + 1, label }) as T)
+
+  const months = computed<IMonth[]>(() => localizedOptions<IMonth>(getLocaleMessages().months))
+  const incomeTypes = computed<IIncomeType[]>(() => localizedOptions<IIncomeType>(getLocaleMessages().incomeTypes))
+  const expenseTypes = computed<IExpenseType[]>(() => localizedOptions<IExpenseType>(getLocaleMessages().expenseTypes))
+  const amountTypes = computed<IAmountType[]>(() => localizedOptions<IAmountType>(getLocaleMessages().amountTypes))
+  const debtTypes = computed<IDebtType[]>(() => localizedOptions<IDebtType>(getLocaleMessages().debtTypes))
+  const years = getYearsForSelect(START_YEAR, END_YEAR)
   const incomes = useStorage<IIncome[]>(INCOMES_LOCAL_STORAGE_KEY, [])
   const expenses = useStorage<IExpense[]>(EXPENSES_LOCAL_STORAGE_KEY, [])
   const debts = useStorage<IDebt[]>(DEBTS_LOCAL_STORAGE_KEY, [])

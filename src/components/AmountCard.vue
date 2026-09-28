@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { ICustomDate, Month  } from '@/types';
+import type { ICustomDate } from '@/types';
 import Card from 'primevue/card';
 import { formatCurrency } from '@/utils';
 
-import {
-  MONTH_LABEL,
-} from '@/constants'
+import { getLocaleMessages } from '@/i18n'
 
 const props = defineProps<{
   amount: number,
@@ -22,7 +20,7 @@ const props = defineProps<{
       <div class="grid place-items-end">
         <span class="text-xs text-gray-500 p-1">
           <i class="pi pi-calendar" style="font-size: 14px;"></i>
-          {{ MONTH_LABEL[(props.date.month) as Month] }} {{ props.date.year }}
+          {{ getLocaleMessages().months[props.date.month - 1] }} {{ props.date.year }}
         </span>
       </div>
     </template>
