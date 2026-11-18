@@ -12,8 +12,11 @@ import {
   DEBT_TYPES,
   DEBTS_LOCAL_STORAGE_KEY,
   USER_INFO_STORAGE_KEY,
-  FUTURE_EXPENSES_LOCAL_STORAGE_KEY
+  FUTURE_EXPENSES_LOCAL_STORAGE_KEY,
+  PAID_ITEMS_STORAGE_KEY
 } from '@/constants'
+import { buildExportFile, mergeById, mergeFutureExpense } from '@/dataTransfer'
+import type { IExportData, IExportFile, IMergeCount } from '@/dataTransfer'
 import type {
   IAmountType,
   IDebt,
@@ -46,6 +49,7 @@ export const useStore = defineStore('store', () => {
   const expenses = useStorage<IExpense[]>(EXPENSES_LOCAL_STORAGE_KEY, [])
   const debts = useStorage<IDebt[]>(DEBTS_LOCAL_STORAGE_KEY, [])
   const futureExpenses = useStorage<IFutureExpense[]>(FUTURE_EXPENSES_LOCAL_STORAGE_KEY, [])
+  const paidItems = useStorage<Record<string, boolean>>(PAID_ITEMS_STORAGE_KEY, {})
 
   const setDarkMode = (value: boolean) => {
     isDarkMode.value = value
@@ -124,6 +128,48 @@ export const useStore = defineStore('store', () => {
     userInfo.value = user
   }
 
+  const exportData = (): IExportFile => buildExportFile({
+    incomes: incomes.value,
+    expenses: expenses.value,
+    debts: debts.value,
+    futureExpenses: futureExpenses.value,
+    paidItems: paidItems.value,
+    userInfo: userInfo.value,
+    isDarkMode: isDarkMode.value,
+  })
+
+  const importData = (data: Partial<IExportData>): IMergeCount => {
+    const total: IMergeCount = { created: 0, updated: 0, unchanged: 0 }
+    // Arrays are updated in place because views keep references to them.
+    const mergeInto = <T extends { id: string }>(
+      list: T[],
+      incoming: T[] | undefined,
+      mergeItem?: (currentItem: T, incomingItem: T) => T,
+    ) => {
+      const { items, ...count } = mergeById(list, incoming ?? [], mergeItem)
+      list.splice(0, list.length, ...items)
+      total.created += count.created
+      total.updated += count.updated
+      total.unchanged += count.unchanged
+    }
+
+    mergeInto(incomes.value, data.incomes)
+    mergeInto(expenses.value, data.expenses)
+    mergeInto(debts.value, data.debts)
+    mergeInto(futureExpenses.value, data.futureExpenses, mergeFutureExpense)
+    if (data.paidItems) {
+      paidItems.value = { ...paidItems.value, ...data.paidItems }
+    }
+    if (data.userInfo) {
+      userInfo.value = data.userInfo
+    }
+    if (data.isDarkMode !== undefined) {
+      isDarkMode.value = data.isDarkMode
+    }
+
+    return total
+  }
+
   return {
     isDarkMode,
     setDarkMode,
@@ -150,7 +196,10 @@ export const useStore = defineStore('store', () => {
     updateFutureExpense,
     removeFutureExpense,
     setFutureExpenses,
+    paidItems,
     userInfo,
-    setUser
+    setUser,
+    exportData,
+    importData
   }
 })

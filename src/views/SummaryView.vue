@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DEBTS_LABEL, PAID_ITEMS_STORAGE_KEY, STATIC_PAYMENT_TYPE_VALUE, SUSCRIPTION_PAYMENT_TYPE_VALUE } from '@/constants';
+import { DEBTS_LABEL, STATIC_PAYMENT_TYPE_VALUE, SUSCRIPTION_PAYMENT_TYPE_VALUE } from '@/constants';
 import { useStore } from '@/stores/store';
 import { ItemType, type ICustomDate, type IMonth, type IYear, type Month } from '@/types';
 import Card from 'primevue/card';
@@ -10,7 +10,7 @@ import Chart from 'primevue/chart';
 import Column from 'primevue/column';
 import Menu from 'primevue/menu';
 import { computed, ref } from 'vue';
-import { useStorage } from '@vueuse/core';
+import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import AmountCard from '@/components/AmountCard.vue';
 import SummaryTable from '@/components/SummaryTable/SummaryTable.vue';
@@ -59,7 +59,7 @@ const monthsToRender = months.filter(month => month.value >= currentMonth - 1)
 const yearsToRender = years.filter(year => year.value >= currentYear)
 
 const selectedDate = computed<ICustomDate>(() => ({ month: selectedMonth.value?.value as Month, year: selectedYear.value?.value }))
-const paidItems = useStorage<Record<string, boolean>>(PAID_ITEMS_STORAGE_KEY, {})
+const { paidItems } = storeToRefs(useStore())
 
 const getPaidItemKey = (itemId: string, itemType: ItemType) => {
   return `${itemType}:${itemId}:${selectedDate.value.year}-${selectedDate.value.month}`

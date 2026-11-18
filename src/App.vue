@@ -3,39 +3,44 @@ import { RouterLink, RouterView, useRoute } from 'vue-router'
 import ToggleSwitch from 'primevue/toggleswitch'
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
-import { onMounted, ref, watch } from 'vue'
+import Divider from 'primevue/divider';
+import Toast from 'primevue/toast';
+import ConfirmDialog from 'primevue/confirmdialog';
+import { ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useStore } from '@/stores/store'
 import { DARK_MODE_STORAGE_KEY } from '@/constants'
+import { DATA_TRANSFER_GROUP, useDataTransfer } from '@/hooks/useDataTransfer'
 
-const { isDarkMode: defaultDarkMode, setDarkMode, userInfo, setUser } = useStore()
-const isDarkMode = ref(defaultDarkMode)
+const store = useStore()
+const { isDarkMode, userInfo } = storeToRefs(store)
 const route = useRoute()
 const userName = ref('')
+const importInput = ref<HTMLInputElement>()
+const { exportToFile, importFromFile } = useDataTransfer()
 
-const toggleDarkModeClass = () => {
-  document.documentElement.classList.toggle(DARK_MODE_STORAGE_KEY)
-}
-
-const toggleDarkMode = () =>{
-  toggleDarkModeClass()
-  setDarkMode(isDarkMode.value)
-}
-
-watch(isDarkMode, () => {
-  toggleDarkMode()
-})
-
-onMounted(() => {
-  if (defaultDarkMode) {
-    toggleDarkModeClass()
-  }
-})
+watch(isDarkMode, (value) => {
+  document.documentElement.classList.toggle(DARK_MODE_STORAGE_KEY, value)
+}, { immediate: true })
 
 const saveUserName = () => {
-  setUser({
+  store.setUser({
     name: userName.value
   })
   location.reload()
+}
+
+const openImportDialog = () => {
+  importInput.value?.click()
+}
+
+const onImportFileSelected = (event: Event) => {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (file) {
+    importFromFile(file)
+  }
 }
 </script>
 
@@ -57,13 +62,17 @@ const saveUserName = () => {
           </div>
 
           <div class="absolute top-3 right-2 lg:right-auto lg:top-auto lg:bottom-25 lg:left-24 grid grid-flow-col lg:grid-flow-row lg:mt-5 place-items-center gap-2 lg:gap-3">
+            <div class="grid grid-flow-col lg:hidden">
+              <Button icon="pi pi-download" size="small" severity="secondary" text rounded aria-label="Exportar datos" @click="exportToFile" />
+              <Button icon="pi pi-upload" size="small" severity="secondary" text rounded aria-label="Importar datos" @click="openImportDialog" />
+            </div>
             <div class="text-xs font-bold">
               <span class="hidden lg:inline-block">Modo Oscuro </span> <i :class="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'"></i>
             </div>
             <ToggleSwitch v-model="isDarkMode" />
           </div>
 
-          <nav class="grid h-16 text-sm lg:text-base lg:px-0 px-4 grid-flow-col lg:grid-flow-row place-items-center gap-3 font-bold">
+          <nav class="grid h-16 lg:h-auto text-sm lg:text-base lg:px-0 px-4 grid-flow-col lg:grid-flow-row place-items-center gap-3 font-bold">
             <RouterLink to="/">
               <i class="pi pi-chart-line" :style="{fontSize: '14px'}"></i> Resumen
             </RouterLink>
@@ -80,6 +89,11 @@ const saveUserName = () => {
               <i class="pi pi-calendar-clock" :style="{fontSize: '14px'}"></i> Gastos futuros
             </RouterLink>
           </nav>
+
+          <div class="hidden lg:grid mt-8 justify-center gap-2">
+            <Button label="Exportar datos" icon="pi pi-download" size="small" severity="secondary" class="w-40" @click="exportToFile" />
+            <Button label="Importar datos" icon="pi pi-upload" size="small" severity="secondary" class="w-40" @click="openImportDialog" />
+          </div>
 
           <a href="https://cristopherps.dev/resume/" class="text-xs font-semibold absolute bottom-8 left-26 hidden lg:grid grid-flow-row mt-5 place-items-center gap-1 cursor-pointer">
             Created By <img src="@/assets/logo.png" alt="Money Balance" class="w-20" />
@@ -104,9 +118,14 @@ const saveUserName = () => {
             <InputText v-model="userName" id="email" autocomplete="off" @keydown.enter="saveUserName"/>
           </div>
           <Button :disabled="!userName" class="w-full" type="button" label="Aceptar" icon="pi pi-user" @click="saveUserName"></Button>
+          <Divider align="center"><span class="text-xs text-surface-500">o</span></Divider>
+          <Button class="w-full" type="button" label="Importar datos desde un respaldo" icon="pi pi-upload" severity="secondary" outlined @click="openImportDialog"></Button>
         </Dialog>
       </div>
     </template>
+    <input ref="importInput" type="file" accept="application/json,.json" class="hidden" @change="onImportFileSelected" />
+    <Toast :group="DATA_TRANSFER_GROUP" />
+    <ConfirmDialog :group="DATA_TRANSFER_GROUP" :closable="false" :draggable="false" />
     <div class="bg-zinc-900 w-full text-xs font-semibold fixed p-2 bottom-0 left-0 lg:hidden grid grid-flow-row mt-5 place-items-center gap-1">
       <a href="https://cristopherps.dev/resume/" class="cursor-pointer">
         <img src="@/assets/logo.png" alt="Money Balance" class="w-18" />
